@@ -15,3 +15,13 @@ backend/*.pyc
 
 # Editor junk
 .DS_Store
+
+# Backend generated history / logs - do NOT commit
+backend/history/
+backend/history_*.json
+backend/agent_history.jsonl
+backend/history_daily.json
+backend/history_series.json
+backend/latest_report.json
+backend/wifi_scan.json
+backend/early_access_signups.jsonl

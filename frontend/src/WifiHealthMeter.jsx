@@ -128,6 +128,38 @@ function extractPerf(report) {
   };
 }
 
+/**
+ * Format "Refreshed 5 seconds ago", "Refreshed 2 minutes ago", etc.
+ */
+function formatRelativeRefresh(ts, prefix = "Refreshed") {
+  if (!ts) return "";
+
+  const now = Date.now();
+  const diffMs = Math.max(0, now - ts);
+  const diffSec = Math.floor(diffMs / 1000);
+
+  if (diffSec < 5) {
+    return `${prefix} just now`;
+  }
+
+  if (diffSec < 60) {
+    return `${prefix} ${diffSec} second${diffSec === 1 ? "" : "s"} ago`;
+  }
+
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) {
+    return `${prefix} ${diffMin} minute${diffMin === 1 ? "" : "s"} ago`;
+  }
+
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) {
+    return `${prefix} ${diffHr} hour${diffHr === 1 ? "" : "s"} ago`;
+  }
+
+  const diffDay = Math.floor(diffHr / 24);
+  return `${prefix} ${diffDay} day${diffDay === 1 ? "" : "s"} ago`;
+}
+
 export default function WifiHealthMeter({
   report,
   onRefreshNow,
@@ -202,7 +234,7 @@ export default function WifiHealthMeter({
             </div>
             {lastRefreshTs && (
               <div className="text-xs text-slate-500 mt-0.5">
-                Refreshed {new Date(lastRefreshTs).toLocaleTimeString()}
+                {formatRelativeRefresh(lastRefreshTs)}
               </div>
             )}
           </div>
@@ -210,7 +242,7 @@ export default function WifiHealthMeter({
           <button
             onClick={onRefreshNow}
             disabled={refreshing}
-            className={`px-3 py-2 rounded-xl text-sm font-semibold border transition
+            className={`px-4 py-2.5 rounded-xl text-sm sm:text-base font-semibold border transition
               ${
                 refreshing
                   ? "bg-slate-100 text-slate-400 border-slate-200 cursor-wait"
@@ -298,9 +330,7 @@ export default function WifiHealthMeter({
             <div className="mt-4 text-[11px] text-slate-500 text-center md:text-left">
               Passively updating every {Math.round(passiveIntervalMs / 1000)}s
               {lastRefreshTs
-                ? ` • last update ${new Date(
-                    lastRefreshTs
-                  ).toLocaleTimeString()}`
+                ? ` • ${formatRelativeRefresh(lastRefreshTs, "Last update")}`
                 : ""}
             </div>
           )}
