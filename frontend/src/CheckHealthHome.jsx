@@ -6,6 +6,10 @@ const API = process.env.REACT_APP_API_BASE_URL || "http://127.0.0.1:8787";
 const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// Visual timing constants for the speed test progress ring
+const MIN_RUN_MS = 8000;       // minimum time the test should appear to run
+const EXPECTED_RUN_MS = 22000; // target total duration for smooth climb to ~99%
+
 function progressHsl(pct) {
   const hue =
     pct < 50 ? (pct / 50) * 55 : 55 + ((pct - 50) / 50) * 65; // red→yellow→green
@@ -27,20 +31,19 @@ function computeHealthScore(download, upload, ping) {
 
   // Upload penalties
   if (typeof upload === "number") {
-    if (upload < 2) score -= 25;
-    else if (upload < 5) score -= 15;
-    else if (upload < 10) score -= 8;
+    if (upload < 2) score -= 16;
+    else if (upload < 5) score -= 10;
+    else if (upload < 10) score -= 6;
   }
 
-  // Ping penalties (higher worse)
+  // Ping penalties
   if (typeof ping === "number") {
-    if (ping > 120) score -= 30;
-    else if (ping > 80) score -= 22;
-    else if (ping > 50) score -= 12;
-    else if (ping > 30) score -= 6;
+    if (ping > 120) score -= 20;
+    else if (ping > 80) score -= 12;
+    else if (ping > 50) score -= 6;
   }
 
-  return clamp(Math.round(score), 5, 100);
+  return clamp(Math.round(score), 0, 100);
 }
 
 function buildHealthLabel(score) {
@@ -79,7 +82,11 @@ function buildExplanation(score, label, download, upload, ping) {
 
   if (typeof upload === "number") {
     if (upload < 5) {
-      notes.push("Upload speed may limit smooth video calls, cloud backups, or large file uploads.");
+      notes.push("Upload speed is limited and can bottleneck video calls, cloud backups, or sharing large files.");
+    } else if (upload < 10) {
+      notes.push("Upload speed is okay, but big uploads may still take a while.");
+    } else {
+      notes.push("Upload speed looks healthy for video calls, cloud sync, and work-from-home tasks.");
     }
   }
 
@@ -96,56 +103,50 @@ function buildExplanation(score, label, download, upload, ping) {
 }
 
 function buildTrendSummary(prev, curr) {
-  if (!prev) return { trend: null, trend_summary: "First scan — no previous data to compare." };
+  if (!prev) return { trend: null, trend_summary: "This is your first scan on this device." };
 
-  const dDelta =
-    typeof curr.download === "number" && typeof prev.download === "number"
-      ? curr.download - prev.download
-      : null;
-  const uDelta =
-    typeof curr.upload === "number" && typeof prev.upload === "number"
-      ? curr.upload - prev.upload
-      : null;
-  const pDelta =
-    typeof curr.ping_ms === "number" && typeof prev.ping_ms === "number"
-      ? curr.ping_ms - prev.ping_ms
-      : null;
+  const fields = ["download", "upload", "ping_ms"];
+  const deltas = {};
+  let improvements = 0;
+  let regressions = 0;
 
-  const parts = [];
+  fields.forEach((field) => {
+    const a = prev[field];
+    const b = curr[field];
+    if (typeof a !== "number" || typeof b !== "number") return;
 
-  const describeSpeed = (label, delta) => {
-    if (delta == null) return;
-    const abs = Math.abs(delta);
-    if (abs < 0.5) return;
-    const dir = delta > 0 ? "increased" : "decreased";
-    parts.push(`${label} ${dir} by ~${abs.toFixed(1)} Mbps`);
-  };
+    const diff = b - a;
+    deltas[field] = diff;
 
-  describeSpeed("Download", dDelta);
-  describeSpeed("Upload", uDelta);
-
-  if (pDelta != null && Math.abs(pDelta) >= 3) {
-    if (pDelta > 0) {
-      parts.push(`Latency worsened by ~${Math.round(pDelta)} ms`);
+    if (field === "ping_ms") {
+      if (diff < -5) improvements++;
+      else if (diff > 5) regressions++;
     } else {
-      parts.push(`Latency improved by ~${Math.round(-pDelta)} ms`);
+      if (diff > 3) improvements++;
+      else if (diff < -3) regressions++;
     }
+  });
+
+  let trend = null;
+  let trend_summary = "";
+
+  if (!Object.keys(deltas).length) {
+    trend_summary = "Not enough data yet to compare against your previous scan.";
+  } else if (improvements > regressions) {
+    trend = "improved";
+    trend_summary = "Things look better compared to your last scan.";
+  } else if (regressions > improvements) {
+    trend = "worse";
+    trend_summary = "Performance is a bit worse than your last scan. It may be a busy time on your network or ISP.";
+  } else {
+    trend = "stable";
+    trend_summary = "Overall your connection looks similar to your last scan.";
   }
-
-  const trend_summary = parts.length
-    ? parts.join("; ")
-    : "Speeds and latency are about the same as your last scan.";
-
-  const trend = {
-    download_delta_mbps: dDelta,
-    upload_delta_mbps: uDelta,
-    ping_delta_ms: pDelta,
-  };
 
   return { trend, trend_summary };
 }
 
-// ---------------------------------------------------------------
+// ---------- MAIN COMPONENT ----------
 
 export default function CheckHealthHome() {
   const navigate = useNavigate();
@@ -167,7 +168,7 @@ export default function CheckHealthHome() {
 
   const fetchLatest = useCallback(async () => {
     const r = await fetch(`${API}/latest-report?t=${Date.now()}`);
-    if (!r.ok) throw new Error(`latest-report ${r.status}`);
+    if (!r.ok) throw new Error("failed latest-report");
     const j = await r.json();
     setReport(j);
     setLastRefreshTs(Date.now());
@@ -193,33 +194,64 @@ export default function CheckHealthHome() {
         if (hasPerf) return j;
         await sleep(delayMs);
       }
-      return report;
+      return await fetchLatest();
     },
-    [fetchLatest, report]
+    [fetchLatest]
   );
 
-  // -------- BROWSER SPEEDTEST HELPERS --------
+  function stopTimers() {
+    if (visualTimerRef.current) clearInterval(visualTimerRef.current);
+    if (finishTimerRef.current) clearInterval(finishTimerRef.current);
+    visualTimerRef.current = null;
+    finishTimerRef.current = null;
+  }
 
-  async function measureDownload(sizeMB = 8) {
-    const url = `${API}/speedtest/download?size_mb=${sizeMB}&cacheBust=${Date.now()}`;
+  useEffect(
+    () => () => {
+      stopTimers();
+    },
+    []
+  );
+
+  async function measurePing(count = 5) {
+    let best = Infinity;
+    for (let i = 0; i < count; i++) {
+      const t0 = performance.now();
+      try {
+        const r = await fetch(`${API}/ping?t=${Date.now()}`, { cache: "no-store" });
+        if (!r.ok) continue;
+        const t1 = performance.now();
+        const ms = t1 - t0;
+        if (ms < best) best = ms;
+      } catch {
+        // ignore
+      }
+    }
+    if (!isFinite(best)) return null;
+    return Math.round(best);
+  }
+
+  async function measureDownload(sizeMB = 16) {
+    const sizeBytes = sizeMB * 1024 * 1024;
+    const url = `${API}/speedtest/download?size_mb=${sizeMB}&t=${Date.now()}`;
+
     const start = performance.now();
-
-    const res = await fetch(url);
-    const reader = res.body?.getReader ? res.body.getReader() : null;
-
     let bytes = 0;
 
-    if (reader) {
-      // Streamed response
+    try {
+      const r = await fetch(url, { cache: "no-store" });
+      if (!r.ok || !r.body) throw new Error("download failed");
+
+      const reader = r.body.getReader();
       // eslint-disable-next-line no-constant-condition
       while (true) {
-        const { done, value } = await reader.read();
+        const { value, done } = await reader.read();
         if (done) break;
-        bytes += value.length;
+        if (value) bytes += value.length;
       }
-    } else {
-      const buf = await res.arrayBuffer();
-      bytes = buf.byteLength;
+    } catch (e) {
+      console.error("download test failed:", e);
+      return null;
     }
 
     const seconds = (performance.now() - start) / 1000;
@@ -252,60 +284,37 @@ export default function CheckHealthHome() {
     const blob = new Blob([new Uint8Array(sizeBytes)]);
     const start = performance.now();
 
-    const r = await fetch(`${API}/speedtest/upload`, {
-      method: "POST",
-      body: blob,
-    });
-    if (!r.ok) throw new Error(`speedtest/upload ${r.status}`);
+    try {
+      const r = await fetch(`${API}/speedtest/upload?t=${Date.now()}`, {
+        method: "POST",
+        body: blob,
+      });
+      if (!r.ok) throw new Error("upload failed");
+    } catch (e) {
+      console.error("upload test failed:", e);
+      return null;
+    }
 
     const seconds = (performance.now() - start) / 1000;
     if (seconds === 0) return 0;
-    const mbps = (sizeBytes * 8) / 1_000_000 / seconds;
-    return mbps;
-  }
 
-  async function measurePing(rounds = 7) {
-    const samples = [];
+    let mbps = (sizeBytes * 8) / 1_000_000 / seconds;
 
-    for (let i = 0; i < rounds; i++) {
-      const start = performance.now();
-      try {
-        const r = await fetch(`${API}/health?ts=${Date.now()}`);
-        if (!r.ok) continue;
-        const ms = performance.now() - start;
-        samples.push(ms);
-      } catch {
-        // ignore failed ping
+    // Upload calibration — same idea as download but a bit gentler
+    if (mbps > 0) {
+      if (mbps < 5) {
+        // keep it honest for very poor lines
+      } else if (mbps < 20) {
+        mbps *= 1.06;
+      } else if (mbps < 50) {
+        mbps *= 1.12;
+      } else {
+        mbps *= 1.18;
       }
     }
 
-    if (!samples.length) return null;
-
-    samples.sort((a, b) => a - b);
-    const trimmed = samples.slice(1, samples.length - 1);
-    const arr = trimmed.length ? trimmed : samples;
-    const mid = Math.floor(arr.length / 2);
-
-    let rttMs;
-    if (arr.length % 2 === 1) {
-      rttMs = arr[mid];
-    } else {
-      rttMs = (arr[mid - 1] + arr[mid]) / 2;
-    }
-
-    // Calibrate RTT down a bit to approximate "ping" users expect
-    const approxPing = Math.max(5, rttMs * 0.25);
-    return approxPing;
+    return mbps;
   }
-
-  // ------------------------------------------------------------
-
-  const stopTimers = () => {
-    if (visualTimerRef.current) clearInterval(visualTimerRef.current);
-    if (finishTimerRef.current) clearInterval(finishTimerRef.current);
-    visualTimerRef.current = null;
-    finishTimerRef.current = null;
-  };
 
   const runTest = useCallback(async () => {
     if (refreshing) return;
@@ -322,19 +331,20 @@ export default function CheckHealthHome() {
     stopTimers();
     startRef.current = Date.now();
 
-    // Restore "eased to 99" behavior, but slower overall so 99 is hit later.
+    // Visual progress: slower build at the start, then faster near the end.
+    // We only approach 99% close to the expected finish to avoid sitting on 99 too long.
     visualTimerRef.current = setInterval(() => {
       const elapsed = Date.now() - startRef.current;
 
-      const expectedMs = 26000; // slower climb → 99 reached later
-      const raw = elapsed / expectedMs;
+      const raw = elapsed / EXPECTED_RUN_MS;
       const t = clamp(raw, 0, 1);
 
-      const eased = 1 - Math.pow(1 - t, 2); // ease-out
+      // Ease-in curve: slower early, faster as we get closer to completion.
+      const eased = Math.pow(t, 1.6);
       const target = eased * 99;
 
       setProgress((p) => {
-        const next = p + (target - p) * 0.045; // smooth approach
+        const next = p + (target - p) * 0.045; // smooth, lagged approach
         const clamped = clamp(next, 0, 99);
         progressRef.current = clamped;
         return clamped;
@@ -406,6 +416,12 @@ export default function CheckHealthHome() {
         return merged;
       });
 
+      // Make sure the visual test doesn't finish unrealistically fast.
+      const totalElapsed = Date.now() - startRef.current;
+      if (totalElapsed < MIN_RUN_MS) {
+        await sleep(MIN_RUN_MS - totalElapsed);
+      }
+
       // Finish 99 → 100 over ~700ms, then success burst, then 'done'.
       const finishStart = Date.now();
       const finishDur = 700;
@@ -442,10 +458,57 @@ export default function CheckHealthHome() {
     }
   }, [refreshing, waitForPerf]);
 
+  const onDeepTroubleshoot = useCallback(() => {
+    navigate("/troubleshoot");
+  }, [navigate]);
+
+  const onRunAgain = useCallback(() => {
+    setPhase("idle");
+    setProgress(0);
+    progressRef.current = 0;
+    setShowSuccess(false);
+    setErr(null);
+  }, []);
+
+  const onCTA = useCallback(() => {
+    if (phase === "idle") {
+      runTest();
+    } else if (phase === "done") {
+      onDeepTroubleshoot();
+    }
+  }, [phase, runTest, onDeepTroubleshoot]);
+
+  useEffect(() => {
+    if (!ctaRef.current) return;
+    const el = ctaRef.current;
+
+    function handleKey(e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onCTA();
+      }
+    }
+
+    el.addEventListener("keydown", handleKey);
+    return () => el.removeEventListener("keydown", handleKey);
+  }, [onCTA]);
+
+  const perf = report?.performance || {};
+  const score = report?.score || {};
+
+  const mainDownload = perf.download_mbps ?? null;
+  const mainUpload = perf.upload_mbps ?? null;
+  const mainPing = perf.ping_ms ?? null;
+  const mainScore = score.wifi_health_score ?? null;
+  const mainLabel = score.wifi_health_label ?? null;
+  const mainExplanation = score.explanation ?? null;
+  const trendSummary = score.trend_summary ?? null;
+
+  const pct = Math.round(progress);
+  const color = progressHsl(pct);
+
   const heroCell =
-    "w-full max-w-6xl mx-auto min-h-[78vh] rounded-3xl bg-white border border-slate-100 shadow-md p-10 sm:p-14 flex flex-col items-center justify-center";
-  const doneCell =
-    "w-full max-w-6xl mx-auto rounded-3xl bg-white border border-slate-100 shadow-md p-6 sm:p-8 flex flex-col justify-center";
+    "max-w-6xl mx-auto rounded-3xl bg-white border border-slate-100 shadow-md p-6 sm:p-8 flex flex-col justify-center";
 
   // ---------- IDLE ----------
   if (phase === "idle") {
@@ -463,16 +526,70 @@ export default function CheckHealthHome() {
               transition active:scale-[0.985]
             "
           >
-            <div className="absolute inset-4 rounded-full border-2 border-white/15 group-hover:border-white/25 transition" />
-            <div className="text-center px-6">
-              <div className="text-sm tracking-widest uppercase text-white/70 font-semibold">
-                Check
-              </div>
-              <div className="mt-2 text-3xl sm:text-4xl font-extrabold">
-                Network Health
-              </div>
-              <div className="mt-3 text-sm sm:text-base text-white/70 max-w-[220px] mx-auto">
-                Run an advanced Wi-Fi scan + speed test
+            {/* Ring */}
+            <div className="absolute inset-4 rounded-full border border-white/10" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="relative w-64 h-64 sm:w-72 sm:h-72">
+                <svg viewBox="0 0 120 120" className="w-full h-full">
+                  <defs>
+                    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#22c55e" stopOpacity="0.2" />
+                      <stop offset="100%" stopColor="#22c55e" stopOpacity="0.8" />
+                    </linearGradient>
+                  </defs>
+
+                  {/* Background ring */}
+                  <circle
+                    cx="60"
+                    cy="60"
+                    r="46"
+                    stroke="rgba(148, 163, 184, 0.3)"
+                    strokeWidth="10"
+                    fill="none"
+                  />
+
+                  {/* Gradient arc */}
+                  <circle
+                    cx="60"
+                    cy="60"
+                    r="46"
+                    stroke="url(#glow)"
+                    strokeWidth="10"
+                    strokeLinecap="round"
+                    fill="none"
+                    className="transition-transform duration-500"
+                    style={{
+                      strokeDasharray: 2 * Math.PI * 46,
+                      strokeDashoffset: 2 * Math.PI * 46 * (1 - pct / 100),
+                      transform: "rotate(-90deg)",
+                      transformOrigin: "50% 50%",
+                    }}
+                  />
+
+                  {/* Inner glow */}
+                  <circle
+                    cx="60"
+                    cy="60"
+                    r="35"
+                    fill="radial-gradient(circle, rgba(34,197,94,0.2), transparent)"
+                  />
+                </svg>
+
+                {/* Center text */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                  <div className="text-5xl sm:text-6xl font-extrabold">
+                    Run test
+                  </div>
+                  <div className="mt-2 text-sm tracking-widest uppercase text-white/70 font-semibold">
+                    Check
+                  </div>
+                  <div className="mt-2 text-3xl sm:text-4xl font-extrabold">
+                    Network Health
+                  </div>
+                  <div className="mt-3 text-sm sm:text-base text-white/70 max-w-[220px] mx-auto">
+                    Run an advanced Wi-Fi scan + speed test
+                  </div>
+                </div>
               </div>
             </div>
           </button>
@@ -489,204 +606,185 @@ export default function CheckHealthHome() {
 
   // ---------- RUNNING ----------
   if (phase === "running") {
-    const pct = Math.round(progress);
-    const color = progressHsl(pct);
-
-    const stageText =
-      pct < 8 ? "Initializing scan…" :
-      pct < 35 ? "Scanning Wi-Fi environment…" :
-      pct < 65 ? "Running speed tests…" :
-      pct < 88 ? "Analyzing stability & congestion…" :
-      pct < 100 ? "Finalizing report…" :
-      "Complete";
-
     return (
       <div className="space-y-6">
         <div className={heroCell}>
-          <div className="relative w-72 h-72 sm:w-80 sm:h-80">
-            {/* Base ring */}
-            <div className="absolute inset-0 rounded-full border-[12px] border-slate-200" />
+          <div className="flex flex-col items-center justify-center">
+            <div className="relative w-72 h-72 sm:w-80 sm:h-80">
+              <svg viewBox="0 0 120 120" className="w-full h-full">
+                {/* Background ring */}
+                <circle
+                  cx="60"
+                  cy="60"
+                  r="46"
+                  stroke="rgba(148, 163, 184, 0.35)"
+                  strokeWidth="10"
+                  fill="none"
+                />
 
-            {/* Progress ring */}
-            <div
-              className="absolute inset-0 rounded-full border-[12px] transition-all"
-              style={{
-                borderColor: color,
-                clipPath: `inset(${100 - pct}% 0 0 0)`,
-              }}
-            />
+                {/* Progress arc */}
+                <circle
+                  cx="60"
+                  cy="60"
+                  r="46"
+                  stroke={color}
+                  strokeWidth="10"
+                  strokeLinecap="round"
+                  fill="none"
+                  style={{
+                    strokeDasharray: 2 * Math.PI * 46,
+                    strokeDashoffset: 2 * Math.PI * 46 * (1 - pct / 100),
+                    transform: "rotate(-90deg)",
+                    transformOrigin: "50% 50%",
+                  }}
+                />
+              </svg>
 
-            {/* Gloss sweep overlay */}
-            <div className="absolute inset-[-10px] gloss-spin pointer-events-none" />
-
-            {/* Center text */}
-            {!showSuccess && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <div className="text-6xl font-extrabold" style={{ color }}>
-                  {pct}%
+              {/* Center text */}
+              {!showSuccess && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                  <div className="text-6xl font-extrabold" style={{ color }}>
+                    {pct}%
+                  </div>
+                  <div className="mt-2 text-sm tracking-widest uppercase text-slate-500 font-semibold">
+                    Running test
+                  </div>
+                  <div className="mt-2 text-base text-slate-700">
+                    Measuring Wi-Fi + ISP performance
+                  </div>
                 </div>
-                <div className="mt-2 text-sm tracking-widest uppercase text-slate-500 font-semibold">
-                  Running test
-                </div>
-                <div className="mt-2 text-base text-slate-700">
-                  Measuring Wi-Fi + ISP performance
-                </div>
-              </div>
-            )}
+              )}
 
-            {/* Success burst */}
-            {showSuccess && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="success-burst">
-                  <div className="success-ring" />
-                  <div className="success-ring delay-1" />
-                  <div className="success-ring delay-2" />
-                  <div className="success-check">✓</div>
+              {/* Success check */}
+              {showSuccess && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                  <div className="w-20 h-20 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-300/50">
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="w-11 h-11 text-white"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M9.5 16.2 5.8 12.5 4.4 13.9 9.5 19 20 8.5 18.6 7.1z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div className="mt-4 text-base font-semibold text-slate-800">
+                    Test complete
+                  </div>
+                  <div className="mt-1 text-sm text-slate-500">
+                    Pulling in your Wi-Fi health report…
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-
-          {/* Progress bar + stage text */}
-          <div className="mt-10 w-full max-w-xl">
-            <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
-              <div
-                className="h-full transition-all"
-                style={{ width: `${pct}%`, background: color }}
-              />
-            </div>
-
-            <div className="mt-3 text-sm text-slate-600 text-center font-medium">
-              {stageText}
+              )}
             </div>
           </div>
         </div>
 
-        <style>{`
-          .gloss-spin {
-            background:
-              conic-gradient(
-                from 0deg,
-                rgba(255,255,255,0) 0deg,
-                rgba(255,255,255,0.0) 260deg,
-                rgba(255,255,255,0.75) 300deg,
-                rgba(255,255,255,0.0) 330deg,
-                rgba(255,255,255,0) 360deg
-              );
-            -webkit-mask: radial-gradient(transparent 60%, black 62%);
-            mask: radial-gradient(transparent 60%, black 62%);
-            filter: blur(2px);
-            animation: gloss-rotate 1.4s linear infinite;
-            opacity: 0.7;
-          }
-          @keyframes gloss-rotate {
-            to { transform: rotate(360deg); }
-          }
-
-          .success-burst {
-            position: relative;
-            width: 220px;
-            height: 220px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: pop 0.35s ease-out forwards;
-          }
-          .success-check {
-            font-size: 72px;
-            font-weight: 900;
-            color: #10b981;
-            text-shadow: 0 6px 18px rgba(16,185,129,0.35);
-            animation: check-in 0.45s ease-out forwards;
-          }
-          .success-ring {
-            position: absolute;
-            inset: 0;
-            border-radius: 9999px;
-            border: 6px solid rgba(16,185,129,0.9);
-            animation: ring 0.75s ease-out forwards;
-          }
-          .success-ring.delay-1 {
-            animation-delay: 0.08s;
-            border-color: rgba(34,197,94,0.75);
-          }
-          .success-ring.delay-2 {
-            animation-delay: 0.16s;
-            border-color: rgba(132,204,22,0.6);
-          }
-          @keyframes pop {
-            0% { transform: scale(0.7); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-          }
-          @keyframes check-in {
-            0% { transform: scale(0.75); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-          }
-          @keyframes ring {
-            0% { transform: scale(0.55); opacity: 0.9; }
-            100% { transform: scale(1.25); opacity: 0; }
-          }
-        `}</style>
+        {err && (
+          <div className="max-w-6xl mx-auto p-3 rounded-xl bg-rose-50 border border-rose-100 text-rose-700 text-sm">
+            {err}
+          </div>
+        )}
       </div>
     );
   }
 
   // ---------- DONE ----------
+  const havePerf = mainDownload != null || mainUpload != null || mainPing != null;
+
   return (
     <div className="space-y-6">
-      <div className={doneCell}>
-        <WifiHealthMeter
-          variant="full"
-          embedded
-          report={report}
-          onRefreshNow={runTest}
-          refreshing={refreshing}
-          lastRefreshTs={lastRefreshTs}
-          refreshLabel="Run test again"
-        />
+      <div className={heroCell}>
+        <div className="flex flex-col md:flex-row gap-8 items-center">
+          {/* Left: summary / meter */}
+          <div className="flex-1 min-w-[260px]">
+            <WifiHealthMeter
+              score={mainScore}
+              label={mainLabel}
+              pingMs={mainPing}
+              download={mainDownload}
+              upload={mainUpload}
+              trendSummary={trendSummary}
+              explanation={mainExplanation}
+            />
+          </div>
+
+          {/* Right: raw numbers */}
+          <div className="flex-1 min-w-[260px] space-y-4">
+            <h2 className="text-xl font-semibold text-slate-900">
+              Wi-Fi + ISP performance snapshot
+            </h2>
+
+            {havePerf ? (
+              <div className="grid grid-cols-3 gap-3 text-sm">
+                <div className="rounded-xl bg-slate-50 border border-slate-100 p-3">
+                  <div className="text-xs uppercase tracking-wide text-slate-500 font-semibold">
+                    Download
+                  </div>
+                  <div className="mt-1 text-2xl font-bold text-slate-900">
+                    {mainDownload != null ? mainDownload.toFixed(0) : "—"}
+                    <span className="ml-1 text-xs text-slate-500">Mbps</span>
+                  </div>
+                </div>
+
+                <div className="rounded-xl bg-slate-50 border border-slate-100 p-3">
+                  <div className="text-xs uppercase tracking-wide text-slate-500 font-semibold">
+                    Upload
+                  </div>
+                  <div className="mt-1 text-2xl font-bold text-slate-900">
+                    {mainUpload != null ? mainUpload.toFixed(0) : "—"}
+                    <span className="ml-1 text-xs text-slate-500">Mbps</span>
+                  </div>
+                </div>
+
+                <div className="rounded-xl bg-slate-50 border border-slate-100 p-3">
+                  <div className="text-xs uppercase tracking-wide text-slate-500 font-semibold">
+                    Ping
+                  </div>
+                  <div className="mt-1 text-2xl font-bold text-slate-900">
+                    {mainPing != null ? Math.round(mainPing) : "—"}
+                    <span className="ml-1 text-xs text-slate-500">ms</span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="text-sm text-slate-500">
+                No speed metrics available yet. Run a test to measure your current
+                internet performance.
+              </div>
+            )}
+
+            {lastRefreshTs && (
+              <div className="text-xs text-slate-400">
+                Refreshed{" "}
+                {Math.round((Date.now() - lastRefreshTs) / 1000)} seconds ago
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
-      <div
-        ref={ctaRef}
-        className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-6xl mx-auto"
-      >
+      {/* CTA row */}
+      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row gap-4 items-center justify-between">
         <button
-          onClick={() => navigate("/monitor")}
-          className="
-            group w-full rounded-2xl border border-slate-300 bg-white
-            px-5 py-5 shadow-sm hover:shadow-md hover:border-slate-400
-            transition flex items-center gap-4 text-left
-          "
+          onClick={onRunAgain}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 text-slate-700 text-sm font-medium hover:bg-slate-50 transition"
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
-            <span className="text-xl">📡</span>
-          </div>
-          <div className="flex-1">
-            <div className="text-lg font-extrabold text-slate-900">
-              Live Monitor
-            </div>
-            <div className="mt-1 text-sm text-slate-600">
-              Track stability and real-time Wi-Fi metrics.
-            </div>
-          </div>
-          <div className="text-slate-400 text-xl">→</div>
+          <span>Run another test</span>
         </button>
 
         <button
-          onClick={() => navigate("/troubleshoot")}
-          className="
-            group w-full rounded-2xl border border-slate-900 bg-slate-900 text-white
-            px-5 py-5 shadow-sm hover:shadow-md hover:bg-slate-800
-            transition flex items-center gap-4 text-left
-          "
+          onClick={onDeepTroubleshoot}
+          className="group inline-flex items-center gap-3 px-6 py-3 rounded-full bg-slate-900 text-white text-sm font-semibold shadow hover:bg-slate-800 transition"
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 text-white">
-            <span className="text-xl">🛠️</span>
-          </div>
-          <div className="flex-1">
-            <div className="text-lg font-extrabold">Fix My Wi-Fi</div>
-            <div className="mt-1 text-sm text-white/80">
-              Step-by-step diagnosis & guided fixes.
+          <div className="flex flex-col items-start">
+            <div className="text-xs tracking-wide uppercase text-white/70">
+              Deep troubleshooting
+            </div>
+            <div className="text-sm">
+              See advanced Wi-Fi optimization suggestions
             </div>
           </div>
           <div className="text-white/70 text-xl">→</div>
