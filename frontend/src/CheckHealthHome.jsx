@@ -7,8 +7,8 @@ const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // Timing controls for the visual animation (behavior only, UI unchanged)
-const MIN_RUN_MS = 5000;      // keep ~5s minimum so it doesn't feel fake
-const EXPECTED_MS = 12000;    // faster climb; hit high 90s closer to ~12s
+const MIN_RUN_MS = 8000;      // minimum total time the test should appear to run
+const EXPECTED_MS = 32000;    // target duration to ease up toward ~99%
 
 function progressHsl(pct) {
   const hue =
@@ -186,21 +186,21 @@ export default function CheckHealthHome() {
   }, [fetchLatest]);
 
   const waitForPerf = useCallback(
-  async (tries = 6, delayMs = 300) => {
-    for (let i = 0; i < tries; i++) {
-      const j = await fetchLatest();
-      const p = j?.performance || {};
-      const hasPerf =
-        p.download_mbps != null ||
-        p.upload_mbps != null ||
-        p.ping_ms != null;
-      if (hasPerf) return j;
-      await sleep(delayMs);
-    }
-    return report;
-  },
-  [fetchLatest, report]
-);
+    async (tries = 12, delayMs = 350) => {
+      for (let i = 0; i < tries; i++) {
+        const j = await fetchLatest();
+        const p = j?.performance || {};
+        const hasPerf =
+          p.download_mbps != null ||
+          p.upload_mbps != null ||
+          p.ping_ms != null;
+        if (hasPerf) return j;
+        await sleep(delayMs);
+      }
+      return report;
+    },
+    [fetchLatest, report]
+  );
 
   // -------- BROWSER SPEEDTEST HELPERS --------
 
@@ -352,14 +352,9 @@ export default function CheckHealthHome() {
       const download = await measureDownload();
       const upload = await measureUpload();
 
-            let backendReport = null;
+      let backendReport = null;
       try {
-        // Don't let the UI sit forever waiting for deep analysis.
-        // If the backend is slow, move on after ~2.5s and rely on browser metrics.
-        backendReport = await Promise.race([
-          backendPromise,
-          sleep(2500).then(() => null),
-        ]);
+        backendReport = await backendPromise;
       } catch (e) {
         console.error("Backend refresh/analysis failed:", e);
       }
