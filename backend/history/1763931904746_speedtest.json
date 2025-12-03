@@ -1,0 +1,123 @@
+{
+  "ts": "2025-11-23T21:05:04.746857Z",
+  "ts_ms": 1763931904746,
+  "tag": "speedtest",
+  "latest_report": {
+    "score": {
+      "wifi_health_score": 57,
+      "explanation": "Your Wi-Fi health is moderate, indicating some congestion and potential issues.",
+      "trend": {
+        "download_delta_mbps": 0,
+        "upload_delta_mbps": 0,
+        "ping_delta_ms": 0,
+        "networks_delta": -2
+      },
+      "trend_summary": "Since last scan: download stayed the same, upload stayed the same, ping stayed the same, networks improved."
+    },
+    "diagnosis": "Random dropouts are likely caused by channel congestion and interference from neighboring networks. The configuration might need adjustments for better performance.",
+    "performance": {
+      "download_mbps": "N/A",
+      "upload_mbps": "N/A",
+      "ping_ms": "N/A",
+      "interpretation": "Performance metrics could not be assessed due to speed test failure. Diagnosis suggests channel interference may be affecting connectivity."
+    },
+    "problems": [
+      "High number of neighboring networks causing congestion.",
+      "Overlapping channels on the 2.4GHz band.",
+      "Limited QoS features available.",
+      "Potential physical interference due to router placement.",
+      "Random dropouts affecting device connectivity."
+    ],
+    "fixes": [
+      "Switch the 2.4GHz channel to 1 or 6 to minimize overlap with neighboring networks. Channel 11 is congested (3 networks).",
+      "Change the 5GHz channel to 149 or 157 for better performance, as channel 36 is crowded.",
+      "Consider moving the router from the bedroom window to a more central location in the home to improve coverage.",
+      "Enable any available QoS settings to prioritize gaming traffic.",
+      "Ensure devices are split between bands for better balance, especially with gaming devices utilizing the 5GHz band."
+    ],
+    "router_steps": "N/A",
+    "questions": []
+  },
+  "wifi_scan": {
+    "ts": 1763931904.66877,
+    "platform": "darwin",
+    "networks": [
+      {
+        "ssid": "Home1",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -61,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "Home1",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -51,
+        "noise_dbm": -95
+      },
+      {
+        "ssid": "KINETIC_4aced0",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -77,
+        "noise_dbm": -95
+      },
+      {
+        "ssid": "Kinetic_907759",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -88,
+        "noise_dbm": -95
+      },
+      {
+        "ssid": "Seanp",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11g/n/ax",
+        "security": "pairport_security_mode_wpa3_transition",
+        "rssi_dbm": -79,
+        "noise_dbm": -95
+      },
+      {
+        "ssid": "Xfinity Mobile",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_enterprise",
+        "rssi_dbm": -80,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "adamel151",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -76,
+        "noise_dbm": -95
+      },
+      {
+        "ssid": "xfinitywifi",
+        "channel": "157 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_none",
+        "rssi_dbm": -89,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "xfinitywifi",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_none",
+        "rssi_dbm": -61,
+        "noise_dbm": -91
+      }
+    ],
+    "speedtest": {
+      "method": "python-speedtest",
+      "error": "HTTP Error 403: Forbidden"
+    }
+  }
+}

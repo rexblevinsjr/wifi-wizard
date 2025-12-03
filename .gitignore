@@ -1,0 +1,17 @@
+# Ignore environment files
+backend/.env
+*.env
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Node modules
+frontend/node_modules/
+
+# Build output
+frontend/build/
+backend/*.pyc
+
+# Editor junk
+.DS_Store

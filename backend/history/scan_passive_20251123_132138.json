@@ -1,0 +1,150 @@
+{
+  "ts": 1763904098.9288268,
+  "platform": "darwin",
+  "networks": [
+    {
+      "ssid": "Home1",
+      "channel": "36 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -54,
+      "noise_dbm": -91
+    },
+    {
+      "ssid": "Home1",
+      "channel": "11 (2GHz, 20MHz)",
+      "phymode": "802.11b/g/n",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -44,
+      "noise_dbm": -95
+    },
+    {
+      "ssid": "Home96",
+      "channel": "6 (2GHz, 20MHz)",
+      "phymode": "802.11g/n",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -79,
+      "noise_dbm": -90
+    },
+    {
+      "ssid": "KINETIC_4aced0",
+      "channel": "11 (2GHz, 20MHz)",
+      "phymode": "802.11b/g/n/ac/ax",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -75,
+      "noise_dbm": -94
+    },
+    {
+      "ssid": "KINETIC_4aced0",
+      "channel": "48 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac/ax",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -87,
+      "noise_dbm": -92
+    },
+    {
+      "ssid": "Kinetic_907759",
+      "channel": "157 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac/ax",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -90,
+      "noise_dbm": -91
+    },
+    {
+      "ssid": "Kinetic_907759",
+      "channel": "11 (2GHz, 20MHz)",
+      "phymode": "802.11b/g/n/ax",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -77,
+      "noise_dbm": -95
+    },
+    {
+      "ssid": "Kinetic_Online",
+      "channel": "6 (2GHz, 20MHz)",
+      "phymode": "802.11b/g/n/ax",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -91,
+      "noise_dbm": -90
+    },
+    {
+      "ssid": "Seanp",
+      "channel": "1 (2GHz, 20MHz)",
+      "phymode": "802.11g/n/ax",
+      "security": "pairport_security_mode_wpa3_transition",
+      "rssi_dbm": -80,
+      "noise_dbm": -93
+    },
+    {
+      "ssid": "Seanp",
+      "channel": "44 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac/ax",
+      "security": "pairport_security_mode_wpa3_transition",
+      "rssi_dbm": -90,
+      "noise_dbm": -91
+    },
+    {
+      "ssid": "WhiskeyTangoFoxtrot",
+      "channel": "11 (2GHz, 20MHz)",
+      "phymode": "802.11g/n/ax",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -79,
+      "noise_dbm": -95
+    },
+    {
+      "ssid": "WhiskeyTangoFoxtrot",
+      "channel": "44 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac/ax",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -83,
+      "noise_dbm": -91
+    },
+    {
+      "ssid": "XFSETUP-D5B4",
+      "channel": "6 (2GHz, 20MHz)",
+      "phymode": "802.11g/n/ax",
+      "security": "pairport_security_mode_wpa3_transition",
+      "rssi_dbm": -86,
+      "noise_dbm": -92
+    },
+    {
+      "ssid": "Xfinity Mobile",
+      "channel": "36 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac",
+      "security": "spairport_security_mode_wpa2_enterprise",
+      "rssi_dbm": -73,
+      "noise_dbm": -91
+    },
+    {
+      "ssid": "Young",
+      "channel": "6 (2GHz, 20MHz)",
+      "phymode": "802.11g/n",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -77,
+      "noise_dbm": -95
+    },
+    {
+      "ssid": "adamel151",
+      "channel": "1 (2GHz, 20MHz)",
+      "phymode": "802.11g/n/ax",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -74,
+      "noise_dbm": -93
+    },
+    {
+      "ssid": "xfinitywifi",
+      "channel": "157 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac",
+      "security": "spairport_security_mode_none",
+      "rssi_dbm": -91,
+      "noise_dbm": -91
+    },
+    {
+      "ssid": "xfinitywifi",
+      "channel": "36 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac",
+      "security": "spairport_security_mode_none",
+      "rssi_dbm": -54,
+      "noise_dbm": -91
+    }
+  ]
+}

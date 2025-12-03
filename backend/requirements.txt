@@ -1,0 +1,11 @@
+fastapi==0.115.4
+uvicorn==0.30.6
+pydantic==2.9.2
+apscheduler==3.10.4
+
+# Needed for optimizer.py (AI report generation)
+python-dotenv>=1.0.0
+openai>=1.0.0
+
+# Needed for scanner.py (speed tests)
+speedtest-cli>=2.1.3

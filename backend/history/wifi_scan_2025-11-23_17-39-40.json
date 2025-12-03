@@ -1,0 +1,38 @@
+{
+  "ts": 1763919580.073525,
+  "platform": "darwin",
+  "networks": [
+    {
+      "ssid": "Home1",
+      "channel": "36 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -33,
+      "noise_dbm": -93
+    },
+    {
+      "ssid": "Home1",
+      "channel": "11 (2GHz, 20MHz)",
+      "phymode": "802.11b/g/n",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -29,
+      "noise_dbm": -94
+    },
+    {
+      "ssid": "Xfinity Mobile",
+      "channel": "36 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac",
+      "security": "spairport_security_mode_wpa2_enterprise",
+      "rssi_dbm": -52,
+      "noise_dbm": -93
+    },
+    {
+      "ssid": "xfinitywifi",
+      "channel": "36 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac",
+      "security": "spairport_security_mode_none",
+      "rssi_dbm": -33,
+      "noise_dbm": -93
+    }
+  ]
+}

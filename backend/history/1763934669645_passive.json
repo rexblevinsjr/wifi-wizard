@@ -1,0 +1,131 @@
+{
+  "ts": "2025-11-23T21:51:09.645461Z",
+  "ts_ms": 1763934669645,
+  "tag": "passive",
+  "latest_report": {
+    "score": {
+      "wifi_health_score": 72,
+      "explanation": "Your Wi-Fi network is moderately healthy with some congestion issues.",
+      "trend": {
+        "download_delta_mbps": 102.63,
+        "upload_delta_mbps": 23.0,
+        "ping_delta_ms": 24.46,
+        "networks_delta": 3
+      },
+      "trend_summary": "Since last scan: download improved, upload stayed the same, ping worsened, networks increased."
+    },
+    "diagnosis": "You are experiencing random dropouts likely due to congestion on the 2.4GHz band. The 5GHz band is less crowded but may also be affected.",
+    "performance": {
+      "download_mbps": 102.63,
+      "upload_mbps": 23.0,
+      "ping_ms": 24.46,
+      "interpretation": "Your download speeds are excellent, but upload speeds are below the expected rate for your plan. The ping time is reasonable."
+    },
+    "problems": [
+      "High congestion on the 2.4GHz band causing dropouts.",
+      "Limited effective channels available due to neighboring networks.",
+      "Potential interference from devices in close proximity to the router."
+    ],
+    "fixes": [
+      "Switch your 2.4GHz channel to channel 1 to reduce congestion (as channels 6 and 11 are crowded).",
+      "Set your 5GHz channel to 149 or 161, as channel 36 has multiple competing networks.",
+      "Consider relocating the router away from walls and interference from electrical devices to improve signal strength."
+    ],
+    "router_steps": "N/A",
+    "questions": []
+  },
+  "wifi_scan": {
+    "ts": 1763934669.6393652,
+    "platform": "darwin",
+    "networks": [
+      {
+        "ssid": "GRUMPY",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n",
+        "security": "spairport_security_mode_wpa2_personal_mixed",
+        "rssi_dbm": -94,
+        "noise_dbm": -96
+      },
+      {
+        "ssid": "Home1",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -43,
+        "noise_dbm": -96
+      },
+      {
+        "ssid": "Home1",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -55,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "KINETIC_4aced0",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -77,
+        "noise_dbm": -94
+      },
+      {
+        "ssid": "KINETIC_4aced0",
+        "channel": "48 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -82,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "Kinetic_907759",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -84,
+        "noise_dbm": -96
+      },
+      {
+        "ssid": "Seanp",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11g/n/ax",
+        "security": "pairport_security_mode_wpa3_transition",
+        "rssi_dbm": -78,
+        "noise_dbm": -96
+      },
+      {
+        "ssid": "Seanp",
+        "channel": "44 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "pairport_security_mode_wpa3_transition",
+        "rssi_dbm": -91,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "WhiskeyTangoFoxtrot",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -79,
+        "noise_dbm": -94
+      },
+      {
+        "ssid": "Xfinity Mobile",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_enterprise",
+        "rssi_dbm": -73,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "xfinitywifi",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_none",
+        "rssi_dbm": -55,
+        "noise_dbm": -91
+      }
+    ]
+  }
+}

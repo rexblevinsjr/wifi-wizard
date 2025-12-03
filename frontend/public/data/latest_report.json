@@ -1,0 +1,32 @@
+{
+  "score": {
+    "wifi_health_score": 80,
+    "explanation": "The Wi-Fi network is performing reasonably well, but there are notable disturbances due to channel congestion.",
+    "trend": {
+      "download_delta_mbps": -10.78,
+      "upload_delta_mbps": 2.99,
+      "ping_delta_ms": -3.1,
+      "networks_delta": -1
+    },
+    "trend_summary": "Since last scan: download worsened, upload improved, ping improved, networks decreased."
+  },
+  "diagnosis": "The primary issue appears to be network congestion on the 2.4GHz band, which may lead to the random dropouts experienced. Additionally, there are several neighboring networks affecting performance.",
+  "performance": {
+    "download_mbps": 111.26,
+    "upload_mbps": 23.24,
+    "ping_ms": 25.43,
+    "interpretation": "The current speeds are generally above the ISP plan, indicating good throughput. However, ping times are moderate, suggesting occasional delays."
+  },
+  "problems": [
+    "High congestion on the 2.4GHz band with multiple overlapping SSIDs.",
+    "Poor RSSI on some connected devices, leading to unreliable connections.",
+    "Interference from neighboring networks affecting overall performance."
+  ],
+  "fixes": [
+    "Change the 2.4GHz channel to either 1 or 6 to minimize interference. Channel 1 has fewer neighboring networks.",
+    "Switch the 5GHz channel to 149 or 161, as channels 36 are congested with multiple networks.",
+    "Position the router in a more central location within the home to improve coverage and reduce dropouts."
+  ],
+  "router_steps": "N/A",
+  "questions": []
+}

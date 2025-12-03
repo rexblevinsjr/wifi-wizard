@@ -1,0 +1,123 @@
+{
+  "ts": "2025-11-23T20:15:40.171582Z",
+  "ts_ms": 1763928940171,
+  "tag": "passive",
+  "latest_report": {
+    "score": {
+      "wifi_health_score": 72,
+      "explanation": "Your Wi-Fi is moderately healthy, but there's room for improvement, particularly in congestion management.",
+      "trend": {
+        "download_delta_mbps": 1.5,
+        "upload_delta_mbps": -0.53,
+        "ping_delta_ms": -6.16,
+        "networks_delta": 1
+      },
+      "trend_summary": "Since last scan: download improved, upload worsened, ping improved, networks increased."
+    },
+    "diagnosis": "Your network experiences occasional dropouts, likely due to congestion from neighboring networks, especially on the 2.4GHz band.",
+    "performance": {
+      "download_mbps": 104.81,
+      "upload_mbps": 22.5,
+      "ping_ms": 26.84,
+      "interpretation": "Download and ping performance are good, but upload speed is slightly below expectations for your plan."
+    },
+    "problems": [
+      "High congestion on 2.4GHz band (10 neighboring networks).",
+      "Random connectivity dropouts.",
+      "Potential interference from devices on congested channels."
+    ],
+    "fixes": [
+      "Change the 2.4GHz channel to channel 6 or 1 for less congestion.",
+      "Change the 5GHz channel to 149 or 161 to avoid overcrowding on 36.",
+      "Consider repositioning the router to reduce interference from walls and furniture."
+    ],
+    "router_steps": "N/A",
+    "questions": []
+  },
+  "wifi_scan": {
+    "ts": 1763928940.156876,
+    "platform": "darwin",
+    "networks": [
+      {
+        "ssid": "GRUMPY",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n",
+        "security": "spairport_security_mode_wpa2_personal_mixed",
+        "rssi_dbm": -93,
+        "noise_dbm": -89
+      },
+      {
+        "ssid": "Home1",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -53,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "Home1",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -55,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Home96",
+        "channel": "6 (2GHz, 20MHz)",
+        "phymode": "802.11g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -89,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "Hyundai_bKCa",
+        "channel": "36 (5GHz, 40MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "pairport_security_mode_wpa3_transition",
+        "rssi_dbm": -84,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "KINETIC_4aced0",
+        "channel": "149 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -90,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Xfinity Mobile",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_enterprise",
+        "rssi_dbm": -74,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Young",
+        "channel": "6 (2GHz, 20MHz)",
+        "phymode": "802.11g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -82,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "adamel151",
+        "channel": "44 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -91,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "xfinitywifi",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_none",
+        "rssi_dbm": -55,
+        "noise_dbm": -92
+      }
+    ]
+  }
+}

@@ -1,0 +1,142 @@
+import json
+from pathlib import Path
+from datetime import datetime, timezone, timedelta
+from collections import defaultdict
+
+HISTORY_FILE = Path("agent_history.jsonl")
+OUT_SERIES = Path("history_series.json")
+OUT_DAILY = Path("history_daily.json")
+
+def parse_iso(ts):
+    try:
+        return datetime.fromisoformat(ts.replace("Z", "+00:00")).astimezone(timezone.utc)
+    except:
+        return None
+
+def load_history():
+    if not HISTORY_FILE.exists():
+        return []
+    rows = []
+    for line in HISTORY_FILE.read_text().splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            rows.append(json.loads(line))
+        except:
+            continue
+    return rows
+
+def build_series(rows):
+    score_series = []
+    perf_series = []
+    outage_events = []
+
+    for r in rows:
+        rtype = r.get("type")
+
+        if rtype == "snapshot":
+            ts = parse_iso(r.get("ts"))
+            if not ts:
+                continue
+
+            report = r.get("report") or {}
+            perf = report.get("performance") or {}
+            score_obj = report.get("score") or {}
+
+            score_val = score_obj.get("wifi_health_score")
+            dl = perf.get("download_mbps")
+            ul = perf.get("upload_mbps")
+            ping = perf.get("ping_ms")
+
+            if score_val is not None:
+                score_series.append({
+                    "ts": ts.isoformat(),
+                    "wifi_health_score": score_val
+                })
+
+            if dl is not None or ul is not None or ping is not None:
+                perf_series.append({
+                    "ts": ts.isoformat(),
+                    "download_mbps": dl,
+                    "upload_mbps": ul,
+                    "ping_ms": ping
+                })
+
+        elif rtype == "outage":
+            ts_start = parse_iso(r.get("ts_start"))
+            ts_end = parse_iso(r.get("ts_end"))
+            if not ts_start or not ts_end:
+                continue
+
+            outage_events.append({
+                "ts_start": ts_start.isoformat(),
+                "ts_end": ts_end.isoformat(),
+                "duration_sec": r.get("duration_sec", 0),
+                "kind": r.get("kind", "internet_down"),
+                "ssid_at_time": r.get("ssid_at_time")
+            })
+
+    # sort by time
+    score_series.sort(key=lambda x: x["ts"])
+    perf_series.sort(key=lambda x: x["ts"])
+    outage_events.sort(key=lambda x: x["ts_start"])
+
+    return {
+        "score_series": score_series,
+        "perf_series": perf_series,
+        "outage_events": outage_events
+    }
+
+def build_daily(series_obj):
+    # group by UTC day
+    daily_scores = defaultdict(list)
+    daily_outage_sec = defaultdict(float)
+
+    for p in series_obj["score_series"]:
+        ts = parse_iso(p["ts"])
+        if not ts:
+            continue
+        day = ts.date().isoformat()
+        daily_scores[day].append(p["wifi_health_score"])
+
+    for o in series_obj["outage_events"]:
+        ts_start = parse_iso(o["ts_start"])
+        if not ts_start:
+            continue
+        day = ts_start.date().isoformat()
+        daily_outage_sec[day] += float(o.get("duration_sec", 0))
+
+    days = sorted(set(list(daily_scores.keys()) + list(daily_outage_sec.keys())))
+
+    daily = []
+    for d in days:
+        scores = daily_scores.get(d, [])
+        avg_score = round(sum(scores)/len(scores), 2) if scores else None
+        outage_min = round(daily_outage_sec.get(d, 0)/60.0, 2)
+
+        daily.append({
+            "day": d,
+            "avg_wifi_health_score": avg_score,
+            "outage_minutes": outage_min,
+            "outage_seconds": round(daily_outage_sec.get(d, 0), 2)
+        })
+
+    return {"daily": daily}
+
+def main():
+    rows = load_history()
+    series_obj = build_series(rows)
+    daily_obj = build_daily(series_obj)
+
+    OUT_SERIES.write_text(json.dumps(series_obj, indent=2))
+    OUT_DAILY.write_text(json.dumps(daily_obj, indent=2))
+
+    print(f"Saved {OUT_SERIES} with:")
+    print(f"  score_series points: {len(series_obj['score_series'])}")
+    print(f"  perf_series points:  {len(series_obj['perf_series'])}")
+    print(f"  outage_events:       {len(series_obj['outage_events'])}")
+    print(f"Saved {OUT_DAILY} (daily aggregates).")
+
+if __name__ == "__main__":
+    main()

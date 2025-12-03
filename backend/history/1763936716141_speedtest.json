@@ -1,0 +1,147 @@
+{
+  "ts": "2025-11-23T22:25:16.141736Z",
+  "ts_ms": 1763936716141,
+  "tag": "speedtest",
+  "latest_report": {
+    "score": {
+      "wifi_health_score": 82,
+      "explanation": "Your Wi-Fi health score indicates a relatively strong network performance with minor congestion.",
+      "trend": {
+        "download_delta_mbps": 0.82,
+        "upload_delta_mbps": -0.11,
+        "ping_delta_ms": -1.99,
+        "networks_delta": -2
+      },
+      "trend_summary": "Since last scan: download improved, upload stayed the same, ping improved, networks decreased."
+    },
+    "diagnosis": "The network is experiencing minor congestion issues with significant interference in the 2.4GHz band. Random dropouts are likely due to channel overlap with neighboring networks.",
+    "performance": {
+      "download_mbps": 102.57,
+      "upload_mbps": 22.86,
+      "ping_ms": 29.68,
+      "interpretation": "The download speed is excellent, comfortably exceeding the ISP plan. The upload speed is fair, while the ping is low and indicates a responsive network."
+    },
+    "problems": [
+      "Random dropouts likely due to channel congestion on 2.4GHz.",
+      "Multiple overlapping SSIDs affecting performance.",
+      "Higher congestion on the 5GHz band due to nearby networks."
+    ],
+    "fixes": [
+      "Switch the 2.4GHz channel to 1 to minimize overlap, as it's less crowded compared to current channels.",
+      "Change the 5GHz channel to 161 to avoid congestion on 36, which is heavily used.",
+      "Consider enabling Band Steering if your router supports it for better device allocation across bands.",
+      "Check router placement; it might help to position it further from windows or obstructions.",
+      "Limit the number of devices connected to the 2.4GHz band, especially those that do not require high bandwidth."
+    ],
+    "router_steps": "N/A",
+    "questions": []
+  },
+  "wifi_scan": {
+    "ts": 1763936694.202089,
+    "platform": "darwin",
+    "networks": [
+      {
+        "ssid": "DIRECT-69-HP DeskJet 2800 series",
+        "channel": "6 (2GHz, 20MHz)",
+        "phymode": "802.11g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -87,
+        "noise_dbm": -94
+      },
+      {
+        "ssid": "Home1",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -53,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "Home1",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -49,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "KINETIC_4aced0",
+        "channel": "149 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -83,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Kinetic_907759",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -79,
+        "noise_dbm": -94
+      },
+      {
+        "ssid": "Seanp",
+        "channel": "44 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "pairport_security_mode_wpa3_transition",
+        "rssi_dbm": -83,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "WhiskeyTangoFoxtrot",
+        "channel": "44 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -84,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "Xfinity Mobile",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_enterprise",
+        "rssi_dbm": -73,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "Young",
+        "channel": "157 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -89,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "adamel151",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -80,
+        "noise_dbm": -94
+      },
+      {
+        "ssid": "xfinitywifi",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_none",
+        "rssi_dbm": -54,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "xfinitywifi",
+        "channel": "157 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_none",
+        "rssi_dbm": -89,
+        "noise_dbm": -91
+      }
+    ],
+    "speedtest": {
+      "download_mbps": 107.9,
+      "upload_mbps": 21.94,
+      "ping_ms": 36.96,
+      "method": "python-speedtest"
+    }
+  }
+}

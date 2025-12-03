@@ -1,0 +1,117 @@
+{
+  "ts": "2025-11-23T18:09:40.005220Z",
+  "ts_ms": 1763921380005,
+  "tag": "passive",
+  "latest_report": {
+    "score": {
+      "wifi_health_score": 72,
+      "explanation": "Your Wi-Fi network is moderately healthy, but there is room for improvement to reduce dropouts.",
+      "trend": {
+        "download_delta_mbps": 97.73,
+        "upload_delta_mbps": 20.87,
+        "ping_delta_ms": 37.75,
+        "networks_delta": 2
+      },
+      "trend_summary": "Since last scan: download improved, upload improved, ping improved, networks increased."
+    },
+    "diagnosis": "The presence of many competing networks likely contributes to your random dropouts. Optimal channel usage and adjustments to your router's settings should improve stability.",
+    "performance": {
+      "download_mbps": 97.73,
+      "upload_mbps": 20.87,
+      "ping_ms": 37.75,
+      "interpretation": "Your download speed is close to the maximum of your ISP plan, while the upload speed is somewhat lower, but overall latency is acceptable."
+    },
+    "problems": [
+      "High congestion on 2.4GHz band due to multiple networks.",
+      "Dropouts may be linked to the location of the router near a bedroom window.",
+      "Inadequate upload speed affecting video calls or online gaming."
+    ],
+    "fixes": [
+      "Change the 2.4GHz channel to 1 for less interference.",
+      "Change the 5GHz channel to 149 to improve stability and reduce congestion.",
+      "Consider relocating the router to a more central location in your home to improve coverage.",
+      "Enable Quality of Service (QoS) features on your router to prioritize gaming traffic.",
+      "Evaluate and minimize device usage on the 2.4GHz band by connecting more devices to the 5GHz band."
+    ],
+    "router_steps": "N/A",
+    "questions": []
+  },
+  "wifi_scan": {
+    "ts": 1763921379.997633,
+    "platform": "darwin",
+    "networks": [
+      {
+        "ssid": "Home1",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -61,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Home1",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -51,
+        "noise_dbm": -94
+      },
+      {
+        "ssid": "Kinetic_907759",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -90,
+        "noise_dbm": -94
+      },
+      {
+        "ssid": "WhiskeyTangoFoxtrot",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -81,
+        "noise_dbm": -94
+      },
+      {
+        "ssid": "Xfinity Mobile",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_enterprise",
+        "rssi_dbm": -79,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Young",
+        "channel": "6 (2GHz, 20MHz)",
+        "phymode": "802.11g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -83,
+        "noise_dbm": -94
+      },
+      {
+        "ssid": "adamel151",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -87,
+        "noise_dbm": -94
+      },
+      {
+        "ssid": "adamel151",
+        "channel": "44 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -93,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "xfinitywifi",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_none",
+        "rssi_dbm": -61,
+        "noise_dbm": -92
+      }
+    ]
+  }
+}

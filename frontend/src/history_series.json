@@ -1,0 +1,27 @@
+{
+  "score_series": [
+    {
+      "ts": "2025-11-23T02:15:07.288635+00:00",
+      "wifi_health_score": 72
+    },
+    {
+      "ts": "2025-11-23T02:15:19.086326+00:00",
+      "wifi_health_score": 85
+    }
+  ],
+  "perf_series": [
+    {
+      "ts": "2025-11-23T02:15:07.288635+00:00",
+      "download_mbps": 93.34,
+      "upload_mbps": 21.89,
+      "ping_ms": 27.42
+    },
+    {
+      "ts": "2025-11-23T02:15:19.086326+00:00",
+      "download_mbps": 99.89,
+      "upload_mbps": 21.86,
+      "ping_ms": 35.11
+    }
+  ],
+  "outage_events": []
+}

@@ -1,0 +1,169 @@
+{
+  "ts": "2025-12-03T13:03:20.204225Z",
+  "ts_ms": 1764767000204,
+  "tag": "speedtest",
+  "latest_report": {
+    "score": {
+      "wifi_health_score": 50,
+      "explanation": "Your Wi-Fi experience may be frustrating due to frequent random dropouts and intermittent connectivity issues. The primary factors are high congestion on both the 2.4GHz and 5GHz bands, leading to unstable signals. The presence of multiple neighboring networks further complicates the situation, impacting overall device performance. While some devices may connect at reasonable speeds, the overall stability of your connection is lacking.",
+      "trend": {
+        "download_delta_mbps": 0.0,
+        "upload_delta_mbps": 0.0,
+        "ping_delta_ms": 0.0,
+        "networks_delta": 1
+      },
+      "trend_summary": "Since last scan: performance remained about the same for download, upload, and ping, with one additional network detected."
+    },
+    "performance": {
+      "download_mbps": null,
+      "upload_mbps": null,
+      "ping_ms": null,
+      "interpretation": "Due to the lack of speedtest data, specific performance metrics cannot be determined. However, the existing conditions indicate potential slowdowns and connectivity hiccups during tasks such as video calls or gaming."
+    },
+    "problems": [
+      "High 2.4GHz congestion causing random dropouts and instability.",
+      "Overlapping 5GHz networks leading to further connectivity issues.",
+      "Potential interference from neighboring Wi-Fi networks degrading performance."
+    ],
+    "fixes": [
+      "Change your 2.4GHz channel to 6 for less congestion.",
+      "Switch your 5GHz channel to 149 to improve signal quality.",
+      "Consider relocating your router from the bedroom window to a more centralized location to enhance overall coverage.",
+      "Disable Smart Connect if the router supports it, to allow manual device management across bands.",
+      "For a deeper fix, consider upgrading to a dual-band or tri-band router to handle multiple devices better."
+    ],
+    "router_steps": [
+      "Access your router's settings by entering 10.0.0.1 in your web browser.",
+      "Navigate to Connection > Wi-Fi > Edit settings.",
+      "Select channel 6 for your 2.4GHz frequency.",
+      "Select channel 149 for your 5GHz frequency.",
+      "Save the changes and restart your router.",
+      "Adjust router placement if possible to a more central location."
+    ],
+    "questions": [
+      "Are you experiencing dropouts at specific times of the day?"
+    ]
+  },
+  "wifi_scan": {
+    "ts": 1764767000.124491,
+    "platform": "darwin",
+    "networks": [
+      {
+        "ssid": "Home1",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -61,
+        "noise_dbm": -90
+      },
+      {
+        "ssid": "Home1",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -54,
+        "noise_dbm": -85
+      },
+      {
+        "ssid": "KINETIC_4aced0",
+        "channel": "48 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -77,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Kinetic_907759",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -78,
+        "noise_dbm": -85
+      },
+      {
+        "ssid": "WhiskeyTangoFoxtrot",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -68,
+        "noise_dbm": -85
+      },
+      {
+        "ssid": "WhiskeyTangoFoxtrot",
+        "channel": "44 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -85,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Xfinity Mobile",
+        "channel": "157 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_enterprise",
+        "rssi_dbm": -89,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "Xfinity Mobile",
+        "channel": "44 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_enterprise",
+        "rssi_dbm": -90,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Young",
+        "channel": "6 (2GHz, 20MHz)",
+        "phymode": "802.11g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -72,
+        "noise_dbm": -86
+      },
+      {
+        "ssid": "Young",
+        "channel": "44 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -79,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "adamel151",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -69,
+        "noise_dbm": -85
+      },
+      {
+        "ssid": "adamel151",
+        "channel": "157 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -83,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "xfinitywifi",
+        "channel": "157 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_none",
+        "rssi_dbm": -84,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "xfinitywifi",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_none",
+        "rssi_dbm": -61,
+        "noise_dbm": -91
+      }
+    ],
+    "speedtest": {
+      "method": "python-speedtest",
+      "error": "HTTP Error 403: Forbidden"
+    }
+  }
+}

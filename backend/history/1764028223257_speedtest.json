@@ -1,0 +1,125 @@
+{
+  "ts": "2025-11-24T23:50:23.257705Z",
+  "ts_ms": 1764028223257,
+  "tag": "speedtest",
+  "latest_report": {
+    "score": {
+      "wifi_health_score": 82,
+      "explanation": "Your Wi-Fi is performing well overall but could benefit from optimization.",
+      "trend": {
+        "download_delta_mbps": 88.92,
+        "upload_delta_mbps": 21.9,
+        "ping_delta_ms": 38.16,
+        "networks_delta": 1
+      },
+      "trend_summary": "Since last scan: download improved, upload improved, ping worsened, networks increased."
+    },
+    "diagnosis": "The Wi-Fi network has a healthy score but is facing interference from multiple networks, especially on the 2.4GHz band. Random dropouts could be due to congestion and poor signal quality in certain areas.",
+    "performance": {
+      "download_mbps": 88.92,
+      "upload_mbps": 21.9,
+      "ping_ms": 38.16,
+      "interpretation": "Current speeds are close to the plan limits, indicating good performance. However, further optimization is recommended to eliminate dropouts."
+    },
+    "problems": [
+      "High network congestion, especially on 2.4GHz band.",
+      "Signal interference from nearby networks.",
+      "Random dropout issues in certain areas.",
+      "Suboptimal placement of the router."
+    ],
+    "fixes": [
+      "Change the 2.4GHz channel to 6 for less congestion.",
+      "Change the 5GHz channel to 149 to reduce interference from other networks.",
+      "Consider relocating the router towards the central area of the home for better coverage.",
+      "Verify that QoS settings are enabled (if available) to prioritize gaming traffic.",
+      "Avoid placing the router near large metal objects or appliances that may cause interference.",
+      "If dropouts persist, consider using a Wi-Fi extender to enhance coverage."
+    ],
+    "router_steps": "N/A",
+    "questions": []
+  },
+  "wifi_scan": {
+    "ts": 1764028201.5317519,
+    "platform": "darwin",
+    "networks": [
+      {
+        "ssid": "GRUMPY",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n",
+        "security": "spairport_security_mode_wpa2_personal_mixed",
+        "rssi_dbm": -95,
+        "noise_dbm": -94
+      },
+      {
+        "ssid": "Home1",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -60,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "KINETIC_4aced0",
+        "channel": "149 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -88,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "WhiskeyTangoFoxtrot",
+        "channel": "44 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -91,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "XFSETUP-D5B4",
+        "channel": "6 (2GHz, 20MHz)",
+        "phymode": "802.11g/n/ax",
+        "security": "pairport_security_mode_wpa3_transition",
+        "rssi_dbm": -90,
+        "noise_dbm": -94
+      },
+      {
+        "ssid": "Xfinity Mobile",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_enterprise",
+        "rssi_dbm": -79,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Young",
+        "channel": "6 (2GHz, 20MHz)",
+        "phymode": "802.11g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -80,
+        "noise_dbm": -94
+      },
+      {
+        "ssid": "adamel151",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -73,
+        "noise_dbm": -94
+      },
+      {
+        "ssid": "xfinitywifi",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_none",
+        "rssi_dbm": -60,
+        "noise_dbm": -92
+      }
+    ],
+    "speedtest": {
+      "download_mbps": 65.45,
+      "upload_mbps": 22.5,
+      "ping_ms": 37.94,
+      "method": "python-speedtest"
+    }
+  }
+}

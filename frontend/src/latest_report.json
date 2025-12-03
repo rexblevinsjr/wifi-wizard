@@ -1,0 +1,34 @@
+{
+  "score": {
+    "wifi_health_score": 85,
+    "explanation": "Your Wi-Fi network is performing well overall, but improvements can still be made to optimize connectivity.",
+    "trend": {
+      "download_delta_mbps": 6.55,
+      "upload_delta_mbps": -0.03,
+      "ping_delta_ms": 7.69,
+      "networks_delta": -3
+    },
+    "trend_summary": "Since last scan: download improved, upload stayed the same, ping worsened, networks decreased."
+  },
+  "diagnosis": "The network is experiencing some congestion and interference, particularly on the 2.4GHz channel, which could be contributing to random dropouts.",
+  "performance": {
+    "download_mbps": 99.89,
+    "upload_mbps": 21.86,
+    "ping_ms": 35.11,
+    "interpretation": "Download speeds are close to the subscribed limit, indicating good performance, while upload speeds are lower than expected."
+  },
+  "problems": [
+    "2.4GHz channel congestion due to multiple networks using channel 11.",
+    "Interference from nearby 5GHz networks, particularly on channels 36 and 157.",
+    "Random dropouts could be due to the router positioning near a window, which may lead to signal loss."
+  ],
+  "fixes": [
+    "Change the 2.4GHz channel to either 1 or 6 to avoid congestion on channel 11.",
+    "Switch the 5GHz channel to 149 or 161 for less interference.",
+    "Consider relocating the router to a more central location to improve coverage.",
+    "Enable Smart Connect or Band Steering to optimize device connections.",
+    "Ensure firmware is up-to-date for optimal performance."
+  ],
+  "router_steps": "N/A",
+  "questions": []
+}

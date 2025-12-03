@@ -1,0 +1,110 @@
+{
+  "ts": 1763937250.001666,
+  "platform": "darwin",
+  "networks": [
+    {
+      "ssid": "Home1",
+      "channel": "11 (2GHz, 20MHz)",
+      "phymode": "802.11b/g/n",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -53,
+      "noise_dbm": -94
+    },
+    {
+      "ssid": "Home1",
+      "channel": "36 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -53,
+      "noise_dbm": -92
+    },
+    {
+      "ssid": "KINETIC_4aced0",
+      "channel": "48 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac/ax",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -86,
+      "noise_dbm": -92
+    },
+    {
+      "ssid": "Kinetic_907759",
+      "channel": "11 (2GHz, 20MHz)",
+      "phymode": "802.11b/g/n/ax",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -82,
+      "noise_dbm": -94
+    },
+    {
+      "ssid": "Seanp",
+      "channel": "1 (2GHz, 20MHz)",
+      "phymode": "802.11g/n/ax",
+      "security": "pairport_security_mode_wpa3_transition",
+      "rssi_dbm": -78,
+      "noise_dbm": -94
+    },
+    {
+      "ssid": "Seanp",
+      "channel": "44 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac/ax",
+      "security": "pairport_security_mode_wpa3_transition",
+      "rssi_dbm": -86,
+      "noise_dbm": -92
+    },
+    {
+      "ssid": "WhiskeyTangoFoxtrot",
+      "channel": "11 (2GHz, 20MHz)",
+      "phymode": "802.11g/n/ax",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -76,
+      "noise_dbm": -94
+    },
+    {
+      "ssid": "WhiskeyTangoFoxtrot",
+      "channel": "44 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac/ax",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -85,
+      "noise_dbm": -92
+    },
+    {
+      "ssid": "Xfinity Mobile",
+      "channel": "36 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac",
+      "security": "spairport_security_mode_wpa2_enterprise",
+      "rssi_dbm": -72,
+      "noise_dbm": -92
+    },
+    {
+      "ssid": "adamel151",
+      "channel": "1 (2GHz, 20MHz)",
+      "phymode": "802.11g/n/ax",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -73,
+      "noise_dbm": -94
+    },
+    {
+      "ssid": "myChevrolet 026B",
+      "channel": "149 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -85,
+      "noise_dbm": -92
+    },
+    {
+      "ssid": "myChevrolet 026B",
+      "channel": "7 (2GHz, 20MHz)",
+      "phymode": "802.11b/g/n",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -71,
+      "noise_dbm": -90
+    },
+    {
+      "ssid": "xfinitywifi",
+      "channel": "36 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac",
+      "security": "spairport_security_mode_none",
+      "rssi_dbm": -53,
+      "noise_dbm": -92
+    }
+  ]
+}

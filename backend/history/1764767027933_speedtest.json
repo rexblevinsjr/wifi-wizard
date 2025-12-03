@@ -1,0 +1,184 @@
+{
+  "ts": "2025-12-03T13:03:47.933810Z",
+  "ts_ms": 1764767027933,
+  "tag": "speedtest",
+  "latest_report": {
+    "score": {
+      "wifi_health_score": 50,
+      "explanation": "The Wi-Fi performance feels poor, leading to random dropouts which can be frustrating during tasks like video calls or gaming. The current signal quality is compromised by high congestion on both 2.4GHz and 5GHz bands, with many competing networks nearby. Additionally, latency issues may worsen the overall experience. It\u2019s crucial to address these problems to improve connectivity for daily activities.",
+      "trend": {
+        "download_delta_mbps": 0.0,
+        "upload_delta_mbps": 0.0,
+        "ping_delta_ms": 0.0,
+        "networks_delta": 1
+      },
+      "trend_summary": "Since the last scan, there has been no change in download, upload, or ping, but the number of visible Wi-Fi networks has increased slightly."
+    },
+    "performance": {
+      "download_mbps": null,
+      "upload_mbps": null,
+      "ping_ms": null,
+      "interpretation": "Without speed test results, it's challenging to provide a concrete performance metric. However, the high congestion and poor health score indicate that the network may struggle with multiple devices, especially during high-demand activities like gaming or streaming."
+    },
+    "problems": [
+      "High 2.4GHz congestion leading to unreliable connectivity and possible random dropouts.",
+      "Insufficient signal strength in certain areas due to the current router placement.",
+      "Multiple overlapping Wi-Fi networks causing increased interference across both bands."
+    ],
+    "fixes": [
+      "Change the 2.4GHz channel to 1 or 6 to avoid congestion (Channel 11 is used by 3 networks).",
+      "Switch the 5GHz channel to 149 or 153, which is less crowded than the currently used channels.",
+      "Relocate your router from the bedroom window to a more central location in the home to improve signal distribution.",
+      "Consider enabling Band Steering to optimize connections between devices on their best-suited bands.",
+      "If issues persist, consider upgrading to a dual-band or tri-band router for better performance."
+    ],
+    "router_steps": [
+      "Access your router settings through http://10.0.0.1.",
+      "Navigate to Connection > Wi-Fi > Edit.",
+      "Change the 2.4GHz channel to either 1 or 6 and save changes.",
+      "For the 5GHz channel, set it to 149 or 153 and save changes.",
+      "Check if the Band Steering feature is enabled to improve device connections."
+    ],
+    "questions": [
+      "Do you have your router in a closed cabinet?"
+    ]
+  },
+  "wifi_scan": {
+    "ts": 1764767027.831431,
+    "platform": "darwin",
+    "networks": [
+      {
+        "ssid": "Home1",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -63,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "Home1",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -55,
+        "noise_dbm": -85
+      },
+      {
+        "ssid": "KINETIC_4aced0",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -68,
+        "noise_dbm": -85
+      },
+      {
+        "ssid": "KINETIC_4aced0",
+        "channel": "48 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -77,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "Kinetic_907759",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -80,
+        "noise_dbm": -85
+      },
+      {
+        "ssid": "Seanp",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11g/n/ax",
+        "security": "pairport_security_mode_wpa3_transition",
+        "rssi_dbm": -78,
+        "noise_dbm": -85
+      },
+      {
+        "ssid": "WhiskeyTangoFoxtrot",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -70,
+        "noise_dbm": -85
+      },
+      {
+        "ssid": "WhiskeyTangoFoxtrot",
+        "channel": "44 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -86,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "Xfinity Mobile",
+        "channel": "157 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_enterprise",
+        "rssi_dbm": -89,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "Xfinity Mobile",
+        "channel": "44 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_enterprise",
+        "rssi_dbm": -89,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "Young",
+        "channel": "44 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -78,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "Young",
+        "channel": "6 (2GHz, 20MHz)",
+        "phymode": "802.11g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -71,
+        "noise_dbm": -85
+      },
+      {
+        "ssid": "adamel151",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -71,
+        "noise_dbm": -85
+      },
+      {
+        "ssid": "adamel151",
+        "channel": "157 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -85,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "xfinitywifi",
+        "channel": "157 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_none",
+        "rssi_dbm": -85,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "xfinitywifi",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_none",
+        "rssi_dbm": -63,
+        "noise_dbm": -91
+      }
+    ],
+    "speedtest": {
+      "method": "python-speedtest",
+      "error": "HTTP Error 403: Forbidden"
+    }
+  }
+}

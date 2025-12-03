@@ -1,0 +1,117 @@
+{
+  "ts": "2025-11-23T20:07:20.790088Z",
+  "ts_ms": 1763928440790,
+  "tag": "speedtest",
+  "latest_report": {
+    "score": {
+      "wifi_health_score": 82,
+      "explanation": "The network is performing well with relatively low congestion but is affected by nearby networks, causing occasional dropouts.",
+      "trend": {
+        "download_delta_mbps": 100.71,
+        "upload_delta_mbps": 22.55,
+        "ping_delta_ms": 34.08,
+        "networks_delta": 2
+      },
+      "trend_summary": "Since last scan: download improved, upload improved, ping worsened, networks increased."
+    },
+    "diagnosis": "Your Wi-Fi network faces some congestion with multiple nearby networks, resulting in random dropouts.",
+    "performance": {
+      "download_mbps": 100.71,
+      "upload_mbps": 22.55,
+      "ping_ms": 34.08,
+      "interpretation": "Current performance is above average for your ISP plan. However, dropouts indicate some instability, which can be countered by optimizing the network."
+    },
+    "problems": [
+      "High number of competing networks (11 total) causing interference.",
+      "Inconsistent Wi-Fi performance leading to random dropouts.",
+      "5GHz band congestion with many overlapping channels.",
+      "Suboptimal router placement in the bedroom window."
+    ],
+    "fixes": [
+      "Set 2.4GHz channel to 6, which has lower congestion compared to channels 1 and 11.",
+      "Set 5GHz channel to 149, which has the least congestion and is within the preferable range.",
+      "Consider relocating the router to a more central location in the home to improve coverage.",
+      "Enable band steering if supported to optimize device connections between 2.4GHz and 5GHz.",
+      "If available, update the router firmware to improve stability and performance.",
+      "Monitor connected devices and limit bandwidth-heavy applications during peak usage times."
+    ],
+    "router_steps": "N/A",
+    "questions": []
+  },
+  "wifi_scan": {
+    "ts": 1763928419.0789278,
+    "platform": "darwin",
+    "networks": [
+      {
+        "ssid": "Home1",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -61,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Seanp",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11g/n/ax",
+        "security": "pairport_security_mode_wpa3_transition",
+        "rssi_dbm": -81,
+        "noise_dbm": -95
+      },
+      {
+        "ssid": "Xfinity Mobile",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_enterprise",
+        "rssi_dbm": -79,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Young",
+        "channel": "6 (2GHz, 20MHz)",
+        "phymode": "802.11g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -76,
+        "noise_dbm": -95
+      },
+      {
+        "ssid": "adamel151",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -87,
+        "noise_dbm": -95
+      },
+      {
+        "ssid": "adamel151",
+        "channel": "157 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -89,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "xfinitywifi",
+        "channel": "157 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_none",
+        "rssi_dbm": -89,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "xfinitywifi",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_none",
+        "rssi_dbm": -61,
+        "noise_dbm": -92
+      }
+    ],
+    "speedtest": {
+      "download_mbps": 104.94,
+      "upload_mbps": 22.72,
+      "ping_ms": 27.58,
+      "method": "python-speedtest"
+    }
+  }
+}

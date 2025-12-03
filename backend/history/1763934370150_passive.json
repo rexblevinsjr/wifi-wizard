@@ -1,0 +1,111 @@
+{
+  "ts": "2025-11-23T21:46:10.150934Z",
+  "ts_ms": 1763934370150,
+  "tag": "passive",
+  "latest_report": {
+    "score": {
+      "wifi_health_score": 72,
+      "explanation": "The Wi-Fi network is performing reasonably well but is experiencing some congestion and random dropouts.",
+      "trend": {
+        "download_delta_mbps": 21.54,
+        "upload_delta_mbps": -1.28,
+        "ping_delta_ms": -12.48,
+        "networks_delta": 6
+      },
+      "trend_summary": "Since last scan: download improved, upload worsened, ping improved, networks increased."
+    },
+    "diagnosis": "Your Wi-Fi network is facing congestion from multiple nearby networks, which may be contributing to the random dropouts. Adjusting your channel settings can help mitigate this issue.",
+    "performance": {
+      "download_mbps": 104.7,
+      "upload_mbps": 22.19,
+      "ping_ms": 24.28,
+      "interpretation": "The download speed is excellent, while the upload speed is slightly below expectations for your ISP plan. The ping time is good, indicating low latency."
+    },
+    "problems": [
+      "Congestion from multiple nearby networks causing interference.",
+      "Random dropouts affecting user experience.",
+      "Suboptimal channel settings on 2.4GHz and 5GHz bands.",
+      "Devices may not be optimally distributed across bands."
+    ],
+    "fixes": [
+      "Change the 2.4GHz channel to 1, which is less congested and has a better RSSI (-75 dBm) than channel 6.",
+      "Switch the 5GHz channel to 149, which is less congested than other 5GHz options in use.",
+      "Consider positioning the router closer to the center of the house for better coverage.",
+      "Enable Smart Connect (if your router supports it) to automatically balance device connections between 2.4GHz and 5GHz bands.",
+      "Reduce interference by keeping electronic devices away from the router.",
+      "Regularly reboot the router to refresh your connection and settings."
+    ],
+    "router_steps": "N/A",
+    "questions": []
+  },
+  "wifi_scan": {
+    "ts": 1763934370.144646,
+    "platform": "darwin",
+    "networks": [
+      {
+        "ssid": "Home1",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -55,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "KINETIC_4aced0",
+        "channel": "48 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -87,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Seanp",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11g/n/ax",
+        "security": "pairport_security_mode_wpa3_transition",
+        "rssi_dbm": -77,
+        "noise_dbm": -95
+      },
+      {
+        "ssid": "WhiskeyTangoFoxtrot",
+        "channel": "44 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -84,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Xfinity Mobile",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_enterprise",
+        "rssi_dbm": -74,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Young",
+        "channel": "6 (2GHz, 20MHz)",
+        "phymode": "802.11g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -79,
+        "noise_dbm": -95
+      },
+      {
+        "ssid": "adamel151",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -74,
+        "noise_dbm": -95
+      },
+      {
+        "ssid": "xfinitywifi",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_none",
+        "rssi_dbm": -55,
+        "noise_dbm": -92
+      }
+    ]
+  }
+}

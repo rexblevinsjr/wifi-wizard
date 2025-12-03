@@ -1,0 +1,86 @@
+{
+  "ts": 1764029173.264124,
+  "platform": "darwin",
+  "networks": [
+    {
+      "ssid": "DIRECT-roku-EJL-214A97",
+      "channel": "157 (5GHz, 20MHz)",
+      "phymode": "802.11a/n",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -88,
+      "noise_dbm": -92
+    },
+    {
+      "ssid": "Home1",
+      "channel": "36 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -58,
+      "noise_dbm": -92
+    },
+    {
+      "ssid": "KINETIC_4aced0",
+      "channel": "48 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac/ax",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -81,
+      "noise_dbm": -92
+    },
+    {
+      "ssid": "SYNC_YU3N029N",
+      "channel": "1 (2GHz, 20MHz)",
+      "phymode": "802.11b/g",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -72,
+      "noise_dbm": -95
+    },
+    {
+      "ssid": "Seanp",
+      "channel": "1 (2GHz, 20MHz)",
+      "phymode": "802.11g/n/ax",
+      "security": "pairport_security_mode_wpa3_transition",
+      "rssi_dbm": -80,
+      "noise_dbm": -95
+    },
+    {
+      "ssid": "Xfinity Mobile",
+      "channel": "36 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac",
+      "security": "spairport_security_mode_wpa2_enterprise",
+      "rssi_dbm": -77,
+      "noise_dbm": -92
+    },
+    {
+      "ssid": "Young",
+      "channel": "157 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -88,
+      "noise_dbm": -92
+    },
+    {
+      "ssid": "adamel151",
+      "channel": "44 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -88,
+      "noise_dbm": -92
+    },
+    {
+      "ssid": "adamel151",
+      "channel": "1 (2GHz, 20MHz)",
+      "phymode": "802.11g/n/ax",
+      "security": "spairport_security_mode_wpa2_personal",
+      "rssi_dbm": -70,
+      "noise_dbm": -95
+    },
+    {
+      "ssid": "xfinitywifi",
+      "channel": "36 (5GHz, 80MHz)",
+      "phymode": "802.11a/n/ac",
+      "security": "spairport_security_mode_none",
+      "rssi_dbm": -58,
+      "noise_dbm": -92
+    }
+  ]
+}

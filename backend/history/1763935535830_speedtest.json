@@ -1,0 +1,155 @@
+{
+  "ts": "2025-11-23T22:05:35.830305Z",
+  "ts_ms": 1763935535830,
+  "tag": "speedtest",
+  "latest_report": {
+    "score": {
+      "wifi_health_score": 57,
+      "explanation": "Moderate congestion detected with potential interference from neighboring networks. Adjusting channels could improve performance.",
+      "trend": {
+        "download_delta_mbps": 0,
+        "upload_delta_mbps": 0,
+        "ping_delta_ms": 0,
+        "networks_delta": -8
+      },
+      "trend_summary": "Since last scan: download stayed the same, upload stayed the same, ping stayed the same, networks improved."
+    },
+    "diagnosis": "Your Wi-Fi network is experiencing moderate congestion with potential interference. Random dropouts can be attributed to competing signals from nearby networks.",
+    "performance": {
+      "download_mbps": 100,
+      "upload_mbps": 30,
+      "ping_ms": "N/A",
+      "interpretation": "The theoretical maximum speeds match your ISP plan, but random dropouts can hinder your online experience. Call your ISP for further assistance if speeds are consistently below plan."
+    },
+    "problems": [
+      "1. Moderate congestion on 2.4GHz channel 11 with two neighboring networks using the same channel.",
+      "2. 5GHz channel 36 is crowded with three networks competing for the same spectrum.",
+      "3. Signal interference likely due to the placement of the router next to a window."
+    ],
+    "fixes": [
+      "Change the 2.4GHz channel to 1 to reduce congestion (currently using channels 1, 11).",
+      "Switch the 5GHz channel to 149, which is less congested and should provide a cleaner signal.",
+      "Consider relocating the router away from the window to improve overall signal distribution."
+    ],
+    "router_steps": "N/A",
+    "questions": [
+      "Have you tried rebooting the modem and router to see if it resolves the dropouts?"
+    ]
+  },
+  "wifi_scan": {
+    "ts": 1763935514.246322,
+    "platform": "darwin",
+    "networks": [
+      {
+        "ssid": "Home1",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -47,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Home1",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -50,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "Home96",
+        "channel": "6 (2GHz, 20MHz)",
+        "phymode": "802.11g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -81,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Home96",
+        "channel": "157 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -92,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "KINETIC_4aced0",
+        "channel": "149 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -86,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "KINETIC_4aced0",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -76,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Kinetic_907759",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -81,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Kinetic_907759",
+        "channel": "157 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -90,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "WhiskeyTangoFoxtrot",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -80,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "Xfinity Mobile",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_enterprise",
+        "rssi_dbm": -69,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "adamel151",
+        "channel": "157 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -89,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "adamel151",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -72,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "xfinitywifi",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_none",
+        "rssi_dbm": -50,
+        "noise_dbm": -91
+      }
+    ],
+    "speedtest": {
+      "download_mbps": 104.58,
+      "upload_mbps": 22.81,
+      "ping_ms": 30.01,
+      "method": "python-speedtest"
+    }
+  }
+}

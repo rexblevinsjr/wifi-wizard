@@ -1,0 +1,123 @@
+{
+  "ts": "2025-11-28T17:18:10.122673Z",
+  "ts_ms": 1764350290122,
+  "tag": "passive",
+  "latest_report": {
+    "score": {
+      "wifi_health_score": 65,
+      "explanation": "Your Wi-Fi network has a moderate health score, indicating some congestion and potential issues with device connectivity.",
+      "trend": {
+        "download_delta_mbps": 101.12,
+        "upload_delta_mbps": 21.97,
+        "ping_delta_ms": 40.01,
+        "networks_delta": 4
+      },
+      "trend_summary": "Since last scan: download improved, upload improved, ping worsened, networks increased."
+    },
+    "diagnosis": "You are experiencing random dropouts likely due to channel congestion. The Wi-Fi network has a fair amount of interference from neighboring networks.",
+    "performance": {
+      "download_mbps": 101.12,
+      "upload_mbps": 21.97,
+      "ping_ms": 40.01,
+      "interpretation": "Current speeds are close to your ISP plan, but the latency may affect real-time applications."
+    },
+    "problems": [
+      "High channel congestion in both 2.4GHz and 5GHz bands leading to interference.",
+      "Random dropouts affecting stable connections.",
+      "Latency issues that may impact performance during high usage."
+    ],
+    "fixes": [
+      "Change the 2.4GHz channel to 1 for less congestion and better performance.",
+      "Switch the 5GHz channel to 149, which shows less interference in the scan results.",
+      "Consider repositioning the router to a more central location in your home to reduce dropouts and improve coverage."
+    ],
+    "router_steps": "N/A",
+    "questions": []
+  },
+  "wifi_scan": {
+    "ts": 1764350290.103411,
+    "platform": "darwin",
+    "networks": [
+      {
+        "ssid": "Home1",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -59,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "Home1",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -52,
+        "noise_dbm": -84
+      },
+      {
+        "ssid": "KINETIC_4aced0",
+        "channel": "48 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -77,
+        "noise_dbm": -92
+      },
+      {
+        "ssid": "KINETIC_4aced0",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n/ac/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -70,
+        "noise_dbm": -84
+      },
+      {
+        "ssid": "Kinetic_907759",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -77,
+        "noise_dbm": -84
+      },
+      {
+        "ssid": "WhiskeyTangoFoxtrot",
+        "channel": "11 (2GHz, 20MHz)",
+        "phymode": "802.11g/n/ax",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -71,
+        "noise_dbm": -84
+      },
+      {
+        "ssid": "Xfinity Mobile",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_wpa2_enterprise",
+        "rssi_dbm": -77,
+        "noise_dbm": -91
+      },
+      {
+        "ssid": "Young",
+        "channel": "6 (2GHz, 20MHz)",
+        "phymode": "802.11g/n",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -78,
+        "noise_dbm": -85
+      },
+      {
+        "ssid": "adamel151",
+        "channel": "1 (2GHz, 20MHz)",
+        "phymode": "802.11b/g/n/ac",
+        "security": "spairport_security_mode_wpa2_personal",
+        "rssi_dbm": -82,
+        "noise_dbm": -84
+      },
+      {
+        "ssid": "xfinitywifi",
+        "channel": "36 (5GHz, 80MHz)",
+        "phymode": "802.11a/n/ac",
+        "security": "spairport_security_mode_none",
+        "rssi_dbm": -59,
+        "noise_dbm": -91
+      }
+    ]
+  }
+}
