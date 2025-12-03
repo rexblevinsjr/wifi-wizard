@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import CheckHealthHome from "./CheckHealthHome";
 
 export default function LandingPage() {
@@ -15,7 +14,9 @@ export default function LandingPage() {
       const list = JSON.parse(localStorage.getItem("early_access_emails") || "[]");
       if (!list.includes(v)) list.push(v);
       localStorage.setItem("early_access_emails", JSON.stringify(list));
-    } catch {}
+    } catch {
+      // ignore localStorage errors
+    }
 
     setSaved(true);
     setEmail("");
@@ -29,18 +30,28 @@ export default function LandingPage() {
         <CheckHealthHome />
       </section>
 
-      {/* Below test */}
+      {/* Trust + free messaging just beneath the main test */}
+      <section className="text-center">
+        <p className="text-xs sm:text-sm text-slate-500">
+          Free forever. No signup required.
+        </p>
+        <p className="mt-1 text-xs sm:text-sm text-slate-500">
+          Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
+        </p>
+      </section>
+
+      {/* Below test: PRO preview + early access */}
       <section className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-100 shadow-sm">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
           {/* Left: Coming soon info */}
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
-              Wi-Fi Wizard PRO is coming soon
+              Wi-Fi Wizard PRO coming soon
             </h1>
 
             <p className="mt-2 text-slate-700 text-sm sm:text-base">
-              The free test gives you a snapshot. PRO will unlock continuous
-              live monitoring, outage tracking, and guided fixes.
+              PRO will unlock continuous live monitoring, outage reports and
+              tracking, and guided network fixes.
             </p>
 
             <div className="mt-4 flex flex-wrap gap-2">
@@ -51,20 +62,11 @@ export default function LandingPage() {
                 Auto speed tests
               </div>
               <div className="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">
-                Outage detection
+                Network health alerts
               </div>
               <div className="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">
-                AI fixes
+                Virtual network assistant
               </div>
-            </div>
-
-            <div className="mt-5">
-              <Link
-                to="/upgrade"
-                className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-slate-900 text-white font-semibold hover:bg-slate-800 transition"
-              >
-                Go PRO
-              </Link>
             </div>
           </div>
 
@@ -74,7 +76,8 @@ export default function LandingPage() {
               Get early access
             </div>
             <div className="text-xs text-slate-600 mt-1">
-              Drop your email and I’ll notify you when Live Monitor + Fix My Wifi go live.
+              Drop your email and I’ll notify you when Wi-Fi Wizard PRO goes
+              live with live monitoring, outage tracking, and guided fixes.
             </div>
 
             <form onSubmit={saveEmail} className="mt-3 flex gap-2">

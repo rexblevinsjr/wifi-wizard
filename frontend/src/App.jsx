@@ -31,28 +31,12 @@ export default function App() {
             {/* Nav Links */}
             <nav className="flex items-center gap-2">
               <Link
-                to="/monitor"
-                className="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition"
-              >
-                Live Monitor
-              </Link>
-
-              <Link
-                to="/troubleshoot"
-                className="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition"
-              >
-                Fix My Wifi
-              </Link>
-
-              <Link
                 to="/upgrade"
-                className="hidden sm:inline-block px-3 py-2 rounded-lg text-sm font-semibold
+                className="px-3 py-2 rounded-lg text-sm font-semibold
                            text-white bg-slate-900 hover:bg-slate-800 transition"
               >
                 Go PRO
               </Link>
-
-              {/* Pricing removed */}
             </nav>
           </div>
         </header>
