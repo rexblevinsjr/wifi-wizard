@@ -57,7 +57,8 @@ export default function UpgradePage() {
               $7.99
             </div>
             <div className="text-xs text-slate-600 mt-1">
-              Early Access · Lock in this price forever
+              Early Access · Lifetime price lock
+
             </div>
           </div>
 
@@ -107,14 +108,10 @@ export default function UpgradePage() {
           )}
         </form>
 
-        <button className="w-full mt-2 px-4 py-3 rounded-2xl bg-slate-900 text-white font-semibold hover:bg-slate-800 transition">
-          Start PRO (coming soon)
-        </button>
-
-        <div className="text-xs text-slate-500">
-          Payments are not enabled yet. Early Access subscribers will keep this
-          discounted pricing permanently when billing goes live.
-        </div>
+        <p className="text-xs text-slate-500 mt-4 leading-relaxed">
+  Payments are not enabled yet. Early Access subscribers will keep this
+  discounted pricing permanently when billing goes live.
+</p>
 
         <Link
           to="/"
