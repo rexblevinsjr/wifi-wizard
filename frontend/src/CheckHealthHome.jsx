@@ -278,9 +278,9 @@ export default function CheckHealthHome() {
       rttMs = (arr[mid - 1] + arr[mid]) / 2;
     }
 
-    // Normalize RTT down a bit so it better matches what users expect
-    // vs raw HTTP round-trip to the cloud.
-    const approxPing = Math.max(5, rttMs * 0.6);
+    // Normalize RTT down to better match what users expect from "ping"
+    // rather than raw HTTP round-trip to the cloud.
+    const approxPing = Math.max(5, rttMs * 0.35);
     return approxPing;
   }
 
@@ -308,26 +308,15 @@ export default function CheckHealthHome() {
     stopTimers();
     startRef.current = Date.now();
 
-    // Visual progress ramps honestly to ~99% while backend + browser tests run
+    // NEW: simple linear climb up to ~92% max, so it never "sits" at 99.
     visualTimerRef.current = setInterval(() => {
-      const elapsed = Date.now() - startRef.current;
-
-      const expectedMs = 14000; // faster climb overall vs 22s
-      const raw = elapsed / expectedMs;
-
-      const t = clamp(raw, 0, 1);
-
-      const eased = 1 - Math.pow(1 - t, 2);
-
-      const target = eased * 99;
-
       setProgress((p) => {
-        const next = p + (target - p) * 0.065; // slightly faster easing
-        const clamped = clamp(next, 0, 99);
-        progressRef.current = clamped;
-        return clamped;
+        const next = p + 1.2; // ~1.2% per tick
+        const capped = Math.min(next, 92); // never above 92% during work
+        progressRef.current = capped;
+        return capped;
       });
-    }, 140);
+    }, 160);
 
     try {
       // Kick off backend refresh + AI/analysis in parallel
@@ -399,7 +388,7 @@ export default function CheckHealthHome() {
         return merged;
       });
 
-      // finish to 100 over ~700ms, then burst, then swap to done
+      // Finish to 100 over ~700ms, then burst, then swap to done
       const finishStart = Date.now();
       const finishDur = 700;
       const startFrom = Math.max(progressRef.current, 0); // wherever we actually are
