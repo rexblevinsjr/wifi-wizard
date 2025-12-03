@@ -534,9 +534,9 @@ export default function CheckHealthHome() {
                 <div className="mt-2 text-sm tracking-widest uppercase text-slate-500 font-semibold">
                   Running test
                 </div>
-                <div className="mt-2 text-base text-slate-700">
-                  Measuring Wi-Fi + ISP performance
-                </div>
+                    <div className="mt-2 text-sm sm:text-base text-slate-700 max-w-[220px] mx-auto px-2">
+      Measuring Wi-Fi + ISP performance
+    </div>
               </div>
             )}
 
