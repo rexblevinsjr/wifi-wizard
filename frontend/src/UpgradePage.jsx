@@ -108,7 +108,7 @@ export default function UpgradePage() {
           )}
         </form>
 
-        <p className="text-xs text-slate-500 mt-4 leading-relaxed">
+        <p className="text-xxs text-slate-500 mt-4 leading-relaxed">
   Payments are not enabled yet. Early Access subscribers will keep this
   discounted pricing permanently when billing goes live.
 </p>
