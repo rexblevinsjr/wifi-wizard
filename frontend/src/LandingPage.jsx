@@ -14,9 +14,7 @@ export default function LandingPage() {
       const list = JSON.parse(localStorage.getItem("early_access_emails") || "[]");
       if (!list.includes(v)) list.push(v);
       localStorage.setItem("early_access_emails", JSON.stringify(list));
-    } catch {
-      // ignore localStorage errors
-    }
+    } catch {}
 
     setSaved(true);
     setEmail("");
@@ -24,24 +22,35 @@ export default function LandingPage() {
 
   return (
     <div className="space-y-8">
-      {/* TOP: Free Test as main focal cell */}
+
+      {/* TOP SECTION: main scan */}
       <section className="relative">
-        {/* Test UI (unchanged) */}
         <CheckHealthHome />
       </section>
 
-      {/* Below test: PRO preview + early access */}
+      {/* ⭐ RESTORED TRUST TEXT EXACTLY LIKE BEFORE ⭐ */}
+      <section className="text-center">
+        <p className="text-xs sm:text-sm text-slate-500">
+          Free forever. No signup required.
+        </p>
+        <p className="mt-1 text-xs sm:text-sm text-slate-500">
+          Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
+        </p>
+      </section>
+
+      {/* PRO coming soon + email capture */}
       <section className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-100 shadow-sm">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
-          {/* Left: Coming soon info */}
+
+          {/* Left side */}
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
               Wi-Fi Wizard PRO coming soon
             </h1>
 
             <p className="mt-2 text-slate-700 text-sm sm:text-base">
-              PRO will unlock continuous live monitoring, outage reports and
-              tracking, and guided network fixes.
+              PRO will unlock continuous live monitoring, outage reports and tracking,
+              and guided network fixes.
             </p>
 
             <div className="mt-4 flex flex-wrap gap-2">
@@ -60,14 +69,15 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Right: Early access email */}
+          {/* Right side */}
           <div className="rounded-2xl border border-slate-200 p-5 bg-slate-50">
             <div className="text-sm font-semibold text-slate-900">
               Get early access
             </div>
+
             <div className="text-xs text-slate-600 mt-1">
-              Drop your email and I’ll notify you when Wi-Fi Wizard PRO goes
-              live with live monitoring, outage tracking, and guided fixes.
+              Drop your email and I’ll notify you when Wi-Fi Wizard PRO goes live
+              with monitoring, outage tracking, and guided fixes.
             </div>
 
             <form onSubmit={saveEmail} className="mt-3 flex gap-2">
@@ -75,11 +85,13 @@ export default function LandingPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@email.com"
-                className="flex-1 px-3 py-2 rounded-xl border border-slate-300 bg-white text-sm outline-none focus:ring-2 focus:ring-slate-900/10"
+                className="flex-1 px-3 py-2 rounded-xl border border-slate-300 bg-white text-sm outline-none
+                           focus:ring-2 focus:ring-slate-900/10"
               />
               <button
                 type="submit"
-                className="px-4 py-2 rounded-xl bg-white border border-slate-300 text-sm font-semibold hover:bg-slate-100 transition"
+                className="px-4 py-2 rounded-xl bg-white border border-slate-300 text-sm font-semibold
+                           hover:bg-slate-100 transition"
               >
                 Notify me
               </button>
@@ -90,17 +102,10 @@ export default function LandingPage() {
                 Saved. Thanks!
               </div>
             )}
-
-            {/* Trust + free messaging at bottom of the button cell */}
-            <p className="mt-4 text-[11px] sm:text-xs text-slate-500">
-              Free forever. No signup required.
-            </p>
-            <p className="mt-1 text-[11px] sm:text-xs text-slate-500">
-              Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
-            </p>
           </div>
         </div>
       </section>
+
     </div>
   );
 }
