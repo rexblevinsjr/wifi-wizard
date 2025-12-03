@@ -12,6 +12,122 @@ function progressHsl(pct) {
   return `hsl(${hue}, 85%, 45%)`;
 }
 
+// ---------- LOCAL HEALTH / TREND HELPERS (LOGIC ONLY) ----------
+
+function computeHealthScore(download, upload, ping) {
+  let score = 100;
+
+  // Download penalties
+  if (typeof download === "number") {
+    if (download < 10) score -= 45;
+    else if (download < 25) score -= 30;
+    else if (download < 50) score -= 18;
+    else if (download < 100) score -= 8;
+  }
+
+  // Upload penalties
+  if (typeof upload === "number") {
+    if (upload < 2) score -= 25;
+    else if (upload < 5) score -= 15;
+    else if (upload < 10) score -= 8;
+  }
+
+  // Ping penalties (higher worse)
+  if (typeof ping === "number") {
+    if (ping > 120) score -= 30;
+    else if (ping > 80) score -= 22;
+    else if (ping > 50) score -= 12;
+    else if (ping > 30) score -= 6;
+  }
+
+  return clamp(Math.round(score), 5, 100);
+}
+
+function buildHealthLabel(score) {
+  if (score >= 85) return "Excellent";
+  if (score >= 70) return "Good";
+  if (score >= 55) return "Fair";
+  return "Poor";
+}
+
+function buildExplanation(score, label, download, upload, ping) {
+  const parts = [];
+
+  if (typeof download === "number") {
+    parts.push(`Download: ~${download.toFixed(1)} Mbps`);
+  }
+  if (typeof upload === "number") {
+    parts.push(`Upload: ~${upload.toFixed(1)} Mbps`);
+  }
+  if (typeof ping === "number") {
+    parts.push(`Ping: ~${Math.round(ping)} ms`);
+  }
+
+  const basics = parts.length ? parts.join(" · ") : "Not enough data to fully characterize your connection.";
+
+  let summary;
+  if (score >= 85) {
+    summary = "Your connection looks excellent for streaming, video calls, and gaming.";
+  } else if (score >= 70) {
+    summary = "Your connection looks good for everyday use and most streaming.";
+  } else if (score >= 55) {
+    summary = "Your connection may feel inconsistent at times, especially under load or with multiple devices.";
+  } else {
+    summary = "Your connection appears constrained or unstable. You may notice buffering, lag, or timeouts.";
+  }
+
+  return `${summary} ${basics}`;
+}
+
+function buildTrendSummary(prev, curr) {
+  if (!prev) return { trend: null, trend_summary: "First scan — no previous data to compare." };
+
+  const dDelta = (typeof curr.download === "number" && typeof prev.download === "number")
+    ? curr.download - prev.download
+    : null;
+  const uDelta = (typeof curr.upload === "number" && typeof prev.upload === "number")
+    ? curr.upload - prev.upload
+    : null;
+  const pDelta = (typeof curr.ping_ms === "number" && typeof prev.ping_ms === "number")
+    ? curr.ping_ms - prev.ping_ms
+    : null;
+
+  const parts = [];
+
+  const describeSpeed = (label, delta) => {
+    if (delta == null) return;
+    const abs = Math.abs(delta);
+    if (abs < 0.5) return;
+    const dir = delta > 0 ? "increased" : "decreased";
+    parts.push(`${label} ${dir} by ~${abs.toFixed(1)}`);
+  };
+
+  describeSpeed("Download", dDelta);
+  describeSpeed("Upload", uDelta);
+
+  if (pDelta != null && Math.abs(pDelta) >= 1) {
+    if (pDelta > 0) {
+      parts.push(`Ping worsened by ~${Math.round(pDelta)} ms`);
+    } else {
+      parts.push(`Ping improved by ~${Math.round(-pDelta)} ms`);
+    }
+  }
+
+  const trend_summary = parts.length
+    ? parts.join("; ")
+    : "Speeds and latency are about the same as your last scan.";
+
+  const trend = {
+    download_delta_mbps: dDelta,
+    upload_delta_mbps: uDelta,
+    ping_delta_ms: pDelta,
+  };
+
+  return { trend, trend_summary };
+}
+
+// ---------------------------------------------------------------
+
 export default function CheckHealthHome() {
   const navigate = useNavigate();
 
@@ -71,9 +187,7 @@ export default function CheckHealthHome() {
     const start = performance.now();
 
     const res = await fetch(url);
-    const reader = res.body?.getReader
-      ? res.body.getReader()
-      : null;
+    const reader = res.body?.getReader ? res.body.getReader() : null;
 
     let bytes = 0;
 
@@ -114,26 +228,33 @@ export default function CheckHealthHome() {
     return mbps;
   }
 
-  async function measurePing(rounds = 5) {
-    let total = 0;
-    let successCount = 0;
+  async function measurePing(rounds = 7) {
+    const samples = [];
 
     for (let i = 0; i < rounds; i++) {
       const start = performance.now();
       try {
         const r = await fetch(`${API}/health?ts=${Date.now()}`);
         if (!r.ok) continue;
-        total += performance.now() - start;
-        successCount += 1;
+        const ms = performance.now() - start;
+        samples.push(ms);
       } catch {
         // ignore failed ping
       }
     }
 
-    if (successCount === 0) {
-      return null;
+    if (!samples.length) return null;
+
+    // Drop extreme outliers and use a median-ish value for stability
+    samples.sort((a, b) => a - b);
+    const trimmed = samples.slice(1, samples.length - 1); // drop min & max
+    const arr = trimmed.length ? trimmed : samples;
+    const mid = Math.floor(arr.length / 2);
+
+    if (arr.length % 2 === 1) {
+      return arr[mid];
     }
-    return total / successCount;
+    return (arr[mid - 1] + arr[mid]) / 2;
   }
 
   // ------------------------------------------------------------
@@ -164,17 +285,13 @@ export default function CheckHealthHome() {
     visualTimerRef.current = setInterval(() => {
       const elapsed = Date.now() - startRef.current;
 
-      // Slower overall climb so it matches a "real" test more closely.
       const expectedMs = 22000; // 22s soft expectation
       const raw = elapsed / expectedMs;
 
-      // Clamp a normalized 0–1 progress
       const t = clamp(raw, 0, 1);
 
-      // Ease-out curve
       const eased = 1 - Math.pow(1 - t, 2);
 
-      // Map eased 0–1 → 0–99
       const target = eased * 99;
 
       setProgress((p) => {
@@ -192,7 +309,6 @@ export default function CheckHealthHome() {
         if (!r1.ok) throw new Error(`refresh-now ${r1.status}`);
 
         // This still lets backend do its thing (AI overview, history, etc.)
-        // We will ignore its speed numbers and overwrite them with browser ones.
         return await waitForPerf(12, 350);
       })();
 
@@ -208,11 +324,31 @@ export default function CheckHealthHome() {
         console.error("Backend refresh/analysis failed:", e);
       }
 
+      // Build browser metrics + local trend
+      const currentMetrics = { download, upload, ping_ms: pingMs, ts: Date.now() };
+      let previousMetrics = null;
+      try {
+        const raw = localStorage.getItem("aiwifi_last_scan");
+        if (raw) previousMetrics = JSON.parse(raw);
+      } catch {
+        previousMetrics = null;
+      }
+
+      const healthScore = computeHealthScore(download, upload, pingMs);
+      const healthLabel = buildHealthLabel(healthScore);
+      const { trend, trend_summary } = buildTrendSummary(previousMetrics, currentMetrics);
+
+      try {
+        localStorage.setItem("aiwifi_last_scan", JSON.stringify(currentMetrics));
+      } catch {
+        // ignore storage failure
+      }
+
       // Stop visual loop at this point; we’ll run the “finish to 100%” segment.
       if (visualTimerRef.current) clearInterval(visualTimerRef.current);
       visualTimerRef.current = null;
 
-      // Merge: keep backend AI + history + scores, override speed test numbers
+      // Merge: keep backend AI + history, override speed + score/trend with browser-derived values
       setReport((prev) => {
         const base = backendReport || prev || {};
         const perf = {
@@ -222,7 +358,18 @@ export default function CheckHealthHome() {
           ping_ms: pingMs ?? base?.performance?.ping_ms ?? null,
           method: "browser-speedtest",
         };
-        const merged = { ...base, performance: perf };
+
+        const baseScore = base.score || {};
+        const mergedScore = {
+          ...baseScore,
+          wifi_health_score: healthScore,
+          wifi_health_label: healthLabel,
+          explanation: buildExplanation(healthScore, healthLabel, download, upload, pingMs),
+          trend_summary: trend_summary ?? baseScore.trend_summary,
+          trend: trend ?? baseScore.trend,
+        };
+
+        const merged = { ...base, performance: perf, score: mergedScore };
         setLastRefreshTs(Date.now());
         return merged;
       });
