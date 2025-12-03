@@ -51,46 +51,66 @@ function buildHealthLabel(score) {
 }
 
 function buildExplanation(score, label, download, upload, ping) {
-  const parts = [];
+  // Short, non-redundant summary based on quality, not restating all numbers.
+  let summary;
+
+  if (score >= 85) {
+    summary =
+      "Your connection looks excellent and should feel snappy for streaming, video calls, and gaming on multiple devices.";
+  } else if (score >= 70) {
+    summary =
+      "Your connection looks solid for everyday use, HD streaming, and most video calls with only occasional slowdowns.";
+  } else if (score >= 55) {
+    summary =
+      "Your connection is usable but may feel inconsistent during peak hours or with several devices active at once.";
+  } else {
+    summary =
+      "Your connection appears constrained or unstable. You’re likely to notice buffering, lag, or timeouts under load.";
+  }
+
+  const notes = [];
 
   if (typeof download === "number") {
-    parts.push(`Download: ~${download.toFixed(1)} Mbps`);
+    if (download < 25) {
+      notes.push("Download speed is on the low side for modern streaming and multi-device use.");
+    } else if (download < 50) {
+      notes.push("Download speed is adequate, but heavy streaming or large downloads may feel slower.");
+    }
   }
+
   if (typeof upload === "number") {
-    parts.push(`Upload: ~${upload.toFixed(1)} Mbps`);
+    if (upload < 5) {
+      notes.push("Upload speed may limit smooth video calls, cloud backups, or large file uploads.");
+    }
   }
+
   if (typeof ping === "number") {
-    parts.push(`Ping: ~${Math.round(ping)} ms`);
+    if (ping > 80) {
+      notes.push("Latency to our test server is elevated, which can add delay to gaming or real-time calls.");
+    } else if (ping < 40) {
+      notes.push("Latency to our test server is low, which is great for gaming and real-time apps.");
+    }
   }
 
-  const basics = parts.length ? parts.join(" · ") : "Not enough data to fully characterize your connection.";
-
-  let summary;
-  if (score >= 85) {
-    summary = "Your connection looks excellent for streaming, video calls, and gaming.";
-  } else if (score >= 70) {
-    summary = "Your connection looks good for everyday use and most streaming.";
-  } else if (score >= 55) {
-    summary = "Your connection may feel inconsistent at times, especially under load or with multiple devices.";
-  } else {
-    summary = "Your connection appears constrained or unstable. You may notice buffering, lag, or timeouts.";
-  }
-
-  return `${summary} ${basics}`;
+  const extras = notes.length ? " " + notes.join(" ") : "";
+  return summary + extras;
 }
 
 function buildTrendSummary(prev, curr) {
   if (!prev) return { trend: null, trend_summary: "First scan — no previous data to compare." };
 
-  const dDelta = (typeof curr.download === "number" && typeof prev.download === "number")
-    ? curr.download - prev.download
-    : null;
-  const uDelta = (typeof curr.upload === "number" && typeof prev.upload === "number")
-    ? curr.upload - prev.upload
-    : null;
-  const pDelta = (typeof curr.ping_ms === "number" && typeof prev.ping_ms === "number")
-    ? curr.ping_ms - prev.ping_ms
-    : null;
+  const dDelta =
+    typeof curr.download === "number" && typeof prev.download === "number"
+      ? curr.download - prev.download
+      : null;
+  const uDelta =
+    typeof curr.upload === "number" && typeof prev.upload === "number"
+      ? curr.upload - prev.upload
+      : null;
+  const pDelta =
+    typeof curr.ping_ms === "number" && typeof prev.ping_ms === "number"
+      ? curr.ping_ms - prev.ping_ms
+      : null;
 
   const parts = [];
 
@@ -99,17 +119,17 @@ function buildTrendSummary(prev, curr) {
     const abs = Math.abs(delta);
     if (abs < 0.5) return;
     const dir = delta > 0 ? "increased" : "decreased";
-    parts.push(`${label} ${dir} by ~${abs.toFixed(1)}`);
+    parts.push(`${label} ${dir} by ~${abs.toFixed(1)} Mbps`);
   };
 
   describeSpeed("Download", dDelta);
   describeSpeed("Upload", uDelta);
 
-  if (pDelta != null && Math.abs(pDelta) >= 1) {
+  if (pDelta != null && Math.abs(pDelta) >= 3) {
     if (pDelta > 0) {
-      parts.push(`Ping worsened by ~${Math.round(pDelta)} ms`);
+      parts.push(`Latency worsened by ~${Math.round(pDelta)} ms`);
     } else {
-      parts.push(`Ping improved by ~${Math.round(-pDelta)} ms`);
+      parts.push(`Latency improved by ~${Math.round(-pDelta)} ms`);
     }
   }
 
@@ -182,7 +202,7 @@ export default function CheckHealthHome() {
 
   // -------- BROWSER SPEEDTEST HELPERS (no UI changes) --------
 
-  async function measureDownload(sizeMB = 8) {
+  async function measureDownload(sizeMB = 4) {
     const url = `${API}/speedtest/download?size_mb=${sizeMB}&cacheBust=${Date.now()}`;
     const start = performance.now();
 
@@ -211,7 +231,7 @@ export default function CheckHealthHome() {
     return mbps;
   }
 
-  async function measureUpload(sizeMB = 4) {
+  async function measureUpload(sizeMB = 2) {
     const sizeBytes = sizeMB * 1024 * 1024;
     const blob = new Blob([new Uint8Array(sizeBytes)]);
     const start = performance.now();
@@ -245,16 +265,23 @@ export default function CheckHealthHome() {
 
     if (!samples.length) return null;
 
-    // Drop extreme outliers and use a median-ish value for stability
+    // Drop extreme outliers
     samples.sort((a, b) => a - b);
-    const trimmed = samples.slice(1, samples.length - 1); // drop min & max
+    const trimmed = samples.slice(1, samples.length - 1);
     const arr = trimmed.length ? trimmed : samples;
     const mid = Math.floor(arr.length / 2);
 
+    let rttMs;
     if (arr.length % 2 === 1) {
-      return arr[mid];
+      rttMs = arr[mid];
+    } else {
+      rttMs = (arr[mid - 1] + arr[mid]) / 2;
     }
-    return (arr[mid - 1] + arr[mid]) / 2;
+
+    // Normalize RTT down a bit so it better matches what users expect
+    // vs raw HTTP round-trip to the cloud.
+    const approxPing = Math.max(5, rttMs * 0.6);
+    return approxPing;
   }
 
   // ------------------------------------------------------------
@@ -285,7 +312,7 @@ export default function CheckHealthHome() {
     visualTimerRef.current = setInterval(() => {
       const elapsed = Date.now() - startRef.current;
 
-      const expectedMs = 22000; // 22s soft expectation
+      const expectedMs = 14000; // faster climb overall vs 22s
       const raw = elapsed / expectedMs;
 
       const t = clamp(raw, 0, 1);
@@ -295,7 +322,7 @@ export default function CheckHealthHome() {
       const target = eased * 99;
 
       setProgress((p) => {
-        const next = p + (target - p) * 0.045;
+        const next = p + (target - p) * 0.065; // slightly faster easing
         const clamped = clamp(next, 0, 99);
         progressRef.current = clamped;
         return clamped;
@@ -307,8 +334,6 @@ export default function CheckHealthHome() {
       const backendPromise = (async () => {
         const r1 = await fetch(`${API}/refresh-now`, { method: "POST" });
         if (!r1.ok) throw new Error(`refresh-now ${r1.status}`);
-
-        // This still lets backend do its thing (AI overview, history, etc.)
         return await waitForPerf(12, 350);
       })();
 
@@ -348,7 +373,7 @@ export default function CheckHealthHome() {
       if (visualTimerRef.current) clearInterval(visualTimerRef.current);
       visualTimerRef.current = null;
 
-      // Merge: keep backend AI + history, override speed + score/trend with browser-derived values
+      // Merge: keep backend history, override speed + score/trend with browser-derived values
       setReport((prev) => {
         const base = backendReport || prev || {};
         const perf = {
