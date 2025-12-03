@@ -235,34 +235,3 @@ async def early_access_join(payload: EarlyAccessSignup):
         print("Failed to append early access signup:", e)
 
     return {"ok": True}
-
-
-@app.get("/early-access/list")
-def early_access_list():
-    """
-    Return all Early Access signups as JSON.
-
-    Shape:
-      {
-        "signups": [
-          { "email": "...", "source": "...", "created_at": ... },
-          ...
-        ]
-      }
-    """
-    signups = []
-    if EARLY_ACCESS_FILE.exists():
-        try:
-            with open(EARLY_ACCESS_FILE, "r", encoding="utf-8") as f:
-                for line in f:
-                    line = line.strip()
-                    if not line:
-                        continue
-                    try:
-                        signups.append(json.loads(line))
-                    except json.JSONDecodeError:
-                        continue
-        except Exception as e:
-            print("Failed to read early access file:", e)
-
-    return {"signups": signups}
