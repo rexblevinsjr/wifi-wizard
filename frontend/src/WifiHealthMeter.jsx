@@ -138,7 +138,7 @@ function formatRelativeRefresh(ts, prefix = "Refreshed") {
   const diffMs = Math.max(0, now - ts);
   const diffSec = Math.floor(diffMs / 1000);
 
-  // 👇 New rule: anything under 60 seconds → "Refreshed just now"
+  // < 60 seconds → "Refreshed just now"
   if (diffSec < 60) {
     return `${prefix} just now`;
   }
@@ -221,14 +221,18 @@ export default function WifiHealthMeter({
     <Wrapper>
       {/* Header row (only shown when onRefreshNow exists; full/home use) */}
       {onRefreshNow && (
-        <div className="flex items-center justify-end gap-4 mb-4">
+        <div className="flex items-center justify-between gap-4 mb-4">
           <div className="text-right">
-            <div className="text-xs font-semibold tracking-wide text-slate-500 uppercase">
-              Network Status
+            {/* "NETWORK STATUS Stable" on one line */}
+            <div className="flex items-baseline justify-end gap-2">
+              <span className="text-[11px] font-semibold tracking-wide text-slate-500 uppercase">
+                Network Status
+              </span>
+              <span className={`text-sm font-semibold ${statusColor}`}>
+                {statusText}
+              </span>
             </div>
-            <div className={`text-sm font-semibold ${statusColor}`}>
-              {statusText}
-            </div>
+
             {lastRefreshTs && (
               <div className="text-xs text-slate-500 mt-0.5">
                 {formatRelativeRefresh(lastRefreshTs)}
@@ -259,7 +263,7 @@ export default function WifiHealthMeter({
             : "flex flex-col md:flex-row gap-6 items-center"
         }
       >
-        {/* Ring – reverted to your original geometry/placement */}
+        {/* Ring – original geometry/placement */}
         <div className="relative w-44 h-44 shrink-0">
           <svg className="w-44 h-44 rotate-[-90deg]" viewBox="0 0 160 160">
             <circle
