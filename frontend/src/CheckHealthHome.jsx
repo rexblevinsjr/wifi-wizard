@@ -275,7 +275,7 @@ export default function CheckHealthHome() {
     }
 
     // Calibrate RTT down a bit to approximate "ping" users expect
-    const approxPing = Math.max(5, rttMs * 0.4);
+    const approxPing = Math.max(5, rttMs * 0.25);
     return approxPing;
   }
 
