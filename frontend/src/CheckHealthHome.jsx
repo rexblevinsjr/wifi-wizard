@@ -637,7 +637,7 @@ export default function CheckHealthHome() {
     );
   }
 
-  // ---------- DONE ----------
+    // ---------- DONE ----------
   return (
     <div className="space-y-6">
       <div className={doneCell}>
@@ -650,53 +650,6 @@ export default function CheckHealthHome() {
           lastRefreshTs={lastRefreshTs}
           refreshLabel="Run test again"
         />
-      </div>
-
-      <div
-        ref={ctaRef}
-        className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-6xl mx-auto"
-      >
-        <button
-          onClick={() => navigate("/monitor")}
-          className="
-            group w-full rounded-2xl border border-slate-300 bg-white
-            px-5 py-5 shadow-sm hover:shadow-md hover:border-slate-400
-            transition flex items-center gap-4 text-left
-          "
-        >
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
-            <span className="text-xl">📡</span>
-          </div>
-          <div className="flex-1">
-            <div className="text-lg font-extrabold text-slate-900">
-              Live Monitor
-            </div>
-            <div className="mt-1 text-sm text-slate-600">
-              Track stability and real-time Wi-Fi metrics.
-            </div>
-          </div>
-          <div className="text-slate-400 text-xl">→</div>
-        </button>
-
-        <button
-          onClick={() => navigate("/troubleshoot")}
-          className="
-            group w-full rounded-2xl border border-slate-900 bg-slate-900 text-white
-            px-5 py-5 shadow-sm hover:shadow-md hover:bg-slate-800
-            transition flex items-center gap-4 text-left
-          "
-        >
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 text-white">
-            <span className="text-xl">🛠️</span>
-          </div>
-          <div className="flex-1">
-            <div className="text-lg font-extrabold">Fix My Wi-Fi</div>
-            <div className="mt-1 text-sm text-white/80">
-              Step-by-step diagnosis & guided fixes.
-            </div>
-          </div>
-          <div className="text-white/70 text-xl">→</div>
-        </button>
       </div>
 
       {err && (
