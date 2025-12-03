@@ -129,7 +129,7 @@ function extractPerf(report) {
 }
 
 /**
- * Format "Refreshed 5 seconds ago", "Refreshed 2 minutes ago", etc.
+ * Format "Refreshed just now", "Refreshed 2 minutes ago", etc.
  */
 function formatRelativeRefresh(ts, prefix = "Refreshed") {
   if (!ts) return "";
@@ -138,12 +138,9 @@ function formatRelativeRefresh(ts, prefix = "Refreshed") {
   const diffMs = Math.max(0, now - ts);
   const diffSec = Math.floor(diffMs / 1000);
 
-  if (diffSec < 5) {
-    return `${prefix} just now`;
-  }
-
+  // 👇 New rule: anything under 60 seconds → "Refreshed just now"
   if (diffSec < 60) {
-    return `${prefix} ${diffSec} second${diffSec === 1 ? "" : "s"} ago`;
+    return `${prefix} just now`;
   }
 
   const diffMin = Math.floor(diffSec / 60);
