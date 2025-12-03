@@ -222,9 +222,10 @@ export default function WifiHealthMeter({
       {/* Header row (only shown when onRefreshNow exists; full/home use) */}
       {onRefreshNow && (
         <div className="flex items-center justify-between gap-4 mb-4">
-          <div className="text-right">
+          {/* Right-side status block, just left of the button */}
+          <div className="flex flex-col items-end">
             {/* "NETWORK STATUS Stable" on one line */}
-            <div className="flex items-baseline justify-end gap-2">
+            <div className="flex items-baseline gap-2">
               <span className="text-[11px] font-semibold tracking-wide text-slate-500 uppercase">
                 Network Status
               </span>
@@ -234,7 +235,7 @@ export default function WifiHealthMeter({
             </div>
 
             {lastRefreshTs && (
-              <div className="text-xs text-slate-500 mt-0.5">
+              <div className="mt-0.5 text-xs text-slate-500 w-full text-center">
                 {formatRelativeRefresh(lastRefreshTs)}
               </div>
             )}
