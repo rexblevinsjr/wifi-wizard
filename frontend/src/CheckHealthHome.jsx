@@ -64,6 +64,80 @@ export default function CheckHealthHome() {
     [fetchLatest, report]
   );
 
+  // -------- BROWSER SPEEDTEST HELPERS (no UI changes) --------
+
+  async function measureDownload(sizeMB = 8) {
+    const url = `${API}/speedtest/download?size_mb=${sizeMB}&cacheBust=${Date.now()}`;
+    const start = performance.now();
+
+    const res = await fetch(url);
+    const reader = res.body?.getReader
+      ? res.body.getReader()
+      : null;
+
+    let bytes = 0;
+
+    if (reader) {
+      // Streamed response
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        bytes += value.length;
+      }
+    } else {
+      // Fallback for environments without streaming support
+      const buf = await res.arrayBuffer();
+      bytes = buf.byteLength;
+    }
+
+    const seconds = (performance.now() - start) / 1000;
+    if (seconds === 0) return 0;
+    const mbps = (bytes * 8) / 1_000_000 / seconds; // megabits/sec
+    return mbps;
+  }
+
+  async function measureUpload(sizeMB = 4) {
+    const sizeBytes = sizeMB * 1024 * 1024;
+    const blob = new Blob([new Uint8Array(sizeBytes)]);
+    const start = performance.now();
+
+    const r = await fetch(`${API}/speedtest/upload`, {
+      method: "POST",
+      body: blob,
+    });
+    if (!r.ok) throw new Error(`speedtest/upload ${r.status}`);
+
+    const seconds = (performance.now() - start) / 1000;
+    if (seconds === 0) return 0;
+    const mbps = (sizeBytes * 8) / 1_000_000 / seconds;
+    return mbps;
+  }
+
+  async function measurePing(rounds = 5) {
+    let total = 0;
+    let successCount = 0;
+
+    for (let i = 0; i < rounds; i++) {
+      const start = performance.now();
+      try {
+        const r = await fetch(`${API}/health?ts=${Date.now()}`);
+        if (!r.ok) continue;
+        total += performance.now() - start;
+        successCount += 1;
+      } catch {
+        // ignore failed ping
+      }
+    }
+
+    if (successCount === 0) {
+      return null;
+    }
+    return total / successCount;
+  }
+
+  // ------------------------------------------------------------
+
   const stopTimers = () => {
     if (visualTimerRef.current) clearInterval(visualTimerRef.current);
     if (finishTimerRef.current) clearInterval(finishTimerRef.current);
@@ -72,9 +146,11 @@ export default function CheckHealthHome() {
   };
 
   const runTest = useCallback(async () => {
+    if (refreshing) return;
+
     setRefreshing(true);
     setErr(null);
-        setPhase("running");
+    setPhase("running");
     setProgress(() => {
       progressRef.current = 0;
       return 0;
@@ -84,46 +160,74 @@ export default function CheckHealthHome() {
     stopTimers();
     startRef.current = Date.now();
 
-    // Visual progress ramps honestly to ~92% while backend runs
-                visualTimerRef.current = setInterval(() => {
-  const elapsed = Date.now() - startRef.current;
+    // Visual progress ramps honestly to ~99% while backend + browser tests run
+    visualTimerRef.current = setInterval(() => {
+      const elapsed = Date.now() - startRef.current;
 
-  // Slower overall climb so it matches a "real" test more closely.
-  // We stretch this so it takes longer to approach 99%,
-  // reducing the "stuck at 99" feeling.
-  const expectedMs = 22000; // 22s soft expectation (slower climb to 99)
-  const raw = elapsed / expectedMs;
+      // Slower overall climb so it matches a "real" test more closely.
+      const expectedMs = 22000; // 22s soft expectation
+      const raw = elapsed / expectedMs;
 
-  // Clamp a normalized 0–1 progress
-  const t = clamp(raw, 0, 1);
+      // Clamp a normalized 0–1 progress
+      const t = clamp(raw, 0, 1);
 
-  // Ease-out curve: fast at the start, slower near the top
-  // so the high 90s feel sticky without stalling for ages.
-  const eased = 1 - Math.pow(1 - t, 2); // quadratic ease-out
+      // Ease-out curve
+      const eased = 1 - Math.pow(1 - t, 2);
 
-  // Map eased 0–1 → 0–99
-  const target = eased * 99;
+      // Map eased 0–1 → 0–99
+      const target = eased * 99;
 
-  setProgress((p) => {
-    // Smaller easing factor → smoother, slower overall motion.
-    const next = p + (target - p) * 0.045;
-    const clamped = clamp(next, 0, 99);
-    progressRef.current = clamped;
-    return clamped;
-  });
-}, 140);
+      setProgress((p) => {
+        const next = p + (target - p) * 0.045;
+        const clamped = clamp(next, 0, 99);
+        progressRef.current = clamped;
+        return clamped;
+      });
+    }, 140);
 
     try {
-      const r1 = await fetch(`${API}/refresh-now`, { method: "POST" });
-      if (!r1.ok) throw new Error(`refresh-now ${r1.status}`);
+      // Kick off backend refresh + AI/analysis in parallel
+      const backendPromise = (async () => {
+        const r1 = await fetch(`${API}/refresh-now`, { method: "POST" });
+        if (!r1.ok) throw new Error(`refresh-now ${r1.status}`);
 
-      await waitForPerf(12, 350);
+        // This still lets backend do its thing (AI overview, history, etc.)
+        // We will ignore its speed numbers and overwrite them with browser ones.
+        return await waitForPerf(12, 350);
+      })();
 
-      // backend done → stop visual loop
+      // Browser-based measurements (user’s real connection)
+      const pingMs = await measurePing();
+      const download = await measureDownload();
+      const upload = await measureUpload();
+
+      let backendReport = null;
+      try {
+        backendReport = await backendPromise;
+      } catch (e) {
+        console.error("Backend refresh/analysis failed:", e);
+      }
+
+      // Stop visual loop at this point; we’ll run the “finish to 100%” segment.
       if (visualTimerRef.current) clearInterval(visualTimerRef.current);
       visualTimerRef.current = null;
 
-            // finish to 100 over ~700ms, then burst, then swap to done
+      // Merge: keep backend AI + history + scores, override speed test numbers
+      setReport((prev) => {
+        const base = backendReport || prev || {};
+        const perf = {
+          ...(base.performance || {}),
+          download_mbps: download ?? base?.performance?.download_mbps ?? null,
+          upload_mbps: upload ?? base?.performance?.upload_mbps ?? null,
+          ping_ms: pingMs ?? base?.performance?.ping_ms ?? null,
+          method: "browser-speedtest",
+        };
+        const merged = { ...base, performance: perf };
+        setLastRefreshTs(Date.now());
+        return merged;
+      });
+
+      // finish to 100 over ~700ms, then burst, then swap to done
       const finishStart = Date.now();
       const finishDur = 700;
       const startFrom = Math.max(progressRef.current, 0); // wherever we actually are
@@ -157,12 +261,12 @@ export default function CheckHealthHome() {
     } finally {
       setRefreshing(false);
     }
-  }, [waitForPerf]);
+  }, [refreshing, waitForPerf]);
 
   // sizes
   const heroCell =
     "w-full max-w-6xl mx-auto min-h-[78vh] rounded-3xl bg-white border border-slate-100 shadow-md p-10 sm:p-14 flex flex-col items-center justify-center";
-    const doneCell =
+  const doneCell =
     "w-full max-w-6xl mx-auto rounded-3xl bg-white border border-slate-100 shadow-md p-6 sm:p-8 flex flex-col justify-center";
 
   // ---------- IDLE ----------
@@ -237,7 +341,7 @@ export default function CheckHealthHome() {
             {/* ✅ Gloss sweep overlay (always active) */}
             <div className="absolute inset-[-10px] gloss-spin pointer-events-none" />
 
-                       {/* Center text */}
+            {/* Center text */}
             {!showSuccess && (
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
                 <div className="text-6xl font-extrabold" style={{ color }}>
