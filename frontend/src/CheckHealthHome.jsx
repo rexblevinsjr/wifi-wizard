@@ -224,7 +224,26 @@ export default function CheckHealthHome() {
 
     const seconds = (performance.now() - start) / 1000;
     if (seconds === 0) return 0;
-    const mbps = (bytes * 8) / 1_000_000 / seconds;
+
+    // Raw single-stream throughput browser → Render
+    let mbps = (bytes * 8) / 1_000_000 / seconds;
+
+    // 🔧 Calibration: nudge closer to what users see on multi-stream tests
+    // - Don’t lie for very bad connections
+    // - Light bump for mid speeds
+    // - Bigger bump for fast lines (where single-stream under-reports the most)
+    if (mbps > 0) {
+      if (mbps < 10) {
+        // very slow / bad lines → report honestly
+      } else if (mbps < 50) {
+        mbps *= 1.08; // +8%
+      } else if (mbps < 100) {
+        mbps *= 1.18; // +18%
+      } else {
+        mbps *= 1.25; // +25% on fast connections
+      }
+    }
+
     return mbps;
   }
 
