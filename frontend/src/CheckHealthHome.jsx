@@ -51,7 +51,6 @@ function buildHealthLabel(score) {
 }
 
 function buildExplanation(score, label, download, upload, ping) {
-  // Short, non-redundant summary based on quality, not restating all numbers.
   let summary;
 
   if (score >= 85) {
@@ -182,7 +181,6 @@ export default function CheckHealthHome() {
     });
   }, [fetchLatest]);
 
-  // wait until performance fields exist (poll after refresh)
   const waitForPerf = useCallback(
     async (tries = 12, delayMs = 350) => {
       for (let i = 0; i < tries; i++) {
@@ -200,9 +198,9 @@ export default function CheckHealthHome() {
     [fetchLatest, report]
   );
 
-  // -------- BROWSER SPEEDTEST HELPERS (no UI changes) --------
+  // -------- BROWSER SPEEDTEST HELPERS --------
 
-  async function measureDownload(sizeMB = 4) {
+  async function measureDownload(sizeMB = 8) {
     const url = `${API}/speedtest/download?size_mb=${sizeMB}&cacheBust=${Date.now()}`;
     const start = performance.now();
 
@@ -220,18 +218,17 @@ export default function CheckHealthHome() {
         bytes += value.length;
       }
     } else {
-      // Fallback for environments without streaming support
       const buf = await res.arrayBuffer();
       bytes = buf.byteLength;
     }
 
     const seconds = (performance.now() - start) / 1000;
     if (seconds === 0) return 0;
-    const mbps = (bytes * 8) / 1_000_000 / seconds; // megabits/sec
+    const mbps = (bytes * 8) / 1_000_000 / seconds;
     return mbps;
   }
 
-  async function measureUpload(sizeMB = 2) {
+  async function measureUpload(sizeMB = 4) {
     const sizeBytes = sizeMB * 1024 * 1024;
     const blob = new Blob([new Uint8Array(sizeBytes)]);
     const start = performance.now();
@@ -265,7 +262,6 @@ export default function CheckHealthHome() {
 
     if (!samples.length) return null;
 
-    // Drop extreme outliers
     samples.sort((a, b) => a - b);
     const trimmed = samples.slice(1, samples.length - 1);
     const arr = trimmed.length ? trimmed : samples;
@@ -278,9 +274,8 @@ export default function CheckHealthHome() {
       rttMs = (arr[mid - 1] + arr[mid]) / 2;
     }
 
-    // Normalize RTT down to better match what users expect from "ping"
-    // rather than raw HTTP round-trip to the cloud.
-    const approxPing = Math.max(5, rttMs * 0.35);
+    // Calibrate RTT down a bit to approximate "ping" users expect
+    const approxPing = Math.max(5, rttMs * 0.4);
     return approxPing;
   }
 
@@ -308,25 +303,32 @@ export default function CheckHealthHome() {
     stopTimers();
     startRef.current = Date.now();
 
-    // NEW: simple linear climb up to ~92% max, so it never "sits" at 99.
+    // Restore "eased to 99" behavior, but slower overall so 99 is hit later.
     visualTimerRef.current = setInterval(() => {
+      const elapsed = Date.now() - startRef.current;
+
+      const expectedMs = 26000; // slower climb → 99 reached later
+      const raw = elapsed / expectedMs;
+      const t = clamp(raw, 0, 1);
+
+      const eased = 1 - Math.pow(1 - t, 2); // ease-out
+      const target = eased * 99;
+
       setProgress((p) => {
-        const next = p + 1.2; // ~1.2% per tick
-        const capped = Math.min(next, 92); // never above 92% during work
-        progressRef.current = capped;
-        return capped;
+        const next = p + (target - p) * 0.045; // smooth approach
+        const clamped = clamp(next, 0, 99);
+        progressRef.current = clamped;
+        return clamped;
       });
-    }, 160);
+    }, 140);
 
     try {
-      // Kick off backend refresh + AI/analysis in parallel
       const backendPromise = (async () => {
         const r1 = await fetch(`${API}/refresh-now`, { method: "POST" });
         if (!r1.ok) throw new Error(`refresh-now ${r1.status}`);
         return await waitForPerf(12, 350);
       })();
 
-      // Browser-based measurements (user’s real connection)
       const pingMs = await measurePing();
       const download = await measureDownload();
       const upload = await measureUpload();
@@ -338,7 +340,6 @@ export default function CheckHealthHome() {
         console.error("Backend refresh/analysis failed:", e);
       }
 
-      // Build browser metrics + local trend
       const currentMetrics = { download, upload, ping_ms: pingMs, ts: Date.now() };
       let previousMetrics = null;
       try {
@@ -358,11 +359,9 @@ export default function CheckHealthHome() {
         // ignore storage failure
       }
 
-      // Stop visual loop at this point; we’ll run the “finish to 100%” segment.
       if (visualTimerRef.current) clearInterval(visualTimerRef.current);
       visualTimerRef.current = null;
 
-      // Merge: keep backend history, override speed + score/trend with browser-derived values
       setReport((prev) => {
         const base = backendReport || prev || {};
         const perf = {
@@ -388,10 +387,10 @@ export default function CheckHealthHome() {
         return merged;
       });
 
-      // Finish to 100 over ~700ms, then burst, then swap to done
+      // Finish 99 → 100 over ~700ms, then success burst, then 'done'.
       const finishStart = Date.now();
       const finishDur = 700;
-      const startFrom = Math.max(progressRef.current, 0); // wherever we actually are
+      const startFrom = Math.max(progressRef.current, 0);
 
       finishTimerRef.current = setInterval(() => {
         const t = Date.now() - finishStart;
@@ -424,7 +423,6 @@ export default function CheckHealthHome() {
     }
   }, [refreshing, waitForPerf]);
 
-  // sizes
   const heroCell =
     "w-full max-w-6xl mx-auto min-h-[78vh] rounded-3xl bg-white border border-slate-100 shadow-md p-10 sm:p-14 flex flex-col items-center justify-center";
   const doneCell =
@@ -499,7 +497,7 @@ export default function CheckHealthHome() {
               }}
             />
 
-            {/* ✅ Gloss sweep overlay (always active) */}
+            {/* Gloss sweep overlay */}
             <div className="absolute inset-[-10px] gloss-spin pointer-events-none" />
 
             {/* Center text */}
@@ -546,7 +544,6 @@ export default function CheckHealthHome() {
         </div>
 
         <style>{`
-          /* --- Gloss Sweep (always active) --- */
           .gloss-spin {
             background:
               conic-gradient(
@@ -567,7 +564,6 @@ export default function CheckHealthHome() {
             to { transform: rotate(360deg); }
           }
 
-          /* --- Success Burst --- */
           .success-burst {
             position: relative;
             width: 220px;
@@ -631,7 +627,6 @@ export default function CheckHealthHome() {
         />
       </div>
 
-      {/* CTA buttons */}
       <div
         ref={ctaRef}
         className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-6xl mx-auto"
