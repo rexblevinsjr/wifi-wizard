@@ -7,8 +7,8 @@ const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // Timing controls for the visual animation (behavior only, UI unchanged)
-const MIN_RUN_MS = 8000;      // minimum total time the test should appear to run
-const EXPECTED_MS = 32000;    // target duration to ease up toward ~99%
+const MIN_RUN_MS = 5000;      // shorter minimum runtime → feels snappier
+const EXPECTED_MS = 15000;    // reach ~99% much sooner (~15s instead of 32s)
 
 function progressHsl(pct) {
   const hue =
