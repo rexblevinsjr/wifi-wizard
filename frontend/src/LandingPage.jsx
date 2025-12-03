@@ -30,16 +30,6 @@ export default function LandingPage() {
         <CheckHealthHome />
       </section>
 
-      {/* Trust + free messaging just beneath the main test */}
-      <section className="text-center">
-        <p className="text-xs sm:text-sm text-slate-500">
-          Free forever. No signup required.
-        </p>
-        <p className="mt-1 text-xs sm:text-sm text-slate-500">
-          Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
-        </p>
-      </section>
-
       {/* Below test: PRO preview + early access */}
       <section className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-100 shadow-sm">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
@@ -100,6 +90,14 @@ export default function LandingPage() {
                 Saved. Thanks!
               </div>
             )}
+
+            {/* Trust + free messaging at bottom of the button cell */}
+            <p className="mt-4 text-[11px] sm:text-xs text-slate-500">
+              Free forever. No signup required.
+            </p>
+            <p className="mt-1 text-[11px] sm:text-xs text-slate-500">
+              Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
+            </p>
           </div>
         </div>
       </section>
