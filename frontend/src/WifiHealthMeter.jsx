@@ -348,19 +348,19 @@ function SpeedTile({ label, value, unit, icon }) {
   const safe = Number.isFinite(Number(value)) ? Number(value).toFixed(1) : null;
 
   return (
-    <div className="p-3 rounded-xl bg-slate-50 border border-slate-100">
+    <div className="px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-100">
       <div className="text-xs text-slate-500 uppercase tracking-wide">
         {label}
       </div>
-      {/* Left: value, Right: big arrow centered in its track */}
-      <div className="mt-1 text-lg font-semibold text-slate-900 grid grid-cols-[3fr,2fr] items-center">
+      {/* Left: value, Right: big arrow slightly more centered in the card */}
+      <div className="mt-0.5 text-lg font-semibold text-slate-900 grid grid-cols-[2.5fr,1.5fr] items-center">
         <div>
           {safe ?? "—"}{" "}
           <span className="text-xs font-normal text-slate-500">{unit}</span>
         </div>
         {icon && (
           <div className="flex items-center justify-center">
-            <span className="text-3xl leading-none text-slate-400">
+            <span className="text-4xl leading-none text-slate-400">
               {icon}
             </span>
           </div>
