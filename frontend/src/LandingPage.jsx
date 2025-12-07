@@ -49,8 +49,7 @@ export default function LandingPage() {
             </h1>
 
             <p className="mt-2 text-slate-700 text-sm sm:text-base">
-              PRO will unlock continuous live monitoring, outage reports and tracking,
-              and guided network fixes.
+              PRO will unlock continuous live monitoring, outage reports, health tracking, and guided network fixes.
             </p>
 
             <div className="mt-4 flex flex-wrap gap-2">
@@ -64,7 +63,7 @@ export default function LandingPage() {
                 Network health alerts
               </div>
               <div className="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">
-                Virtual network assistant
+                Virtual tech support
               </div>
             </div>
           </div>
