@@ -261,10 +261,10 @@ export default function WifiHealthMeter({
         className={
           compactCentered
             ? "flex flex-col items-center text-center gap-4 min-h-[260px]"
-            : "flex flex-col md:flex-row gap-6 items-start"
+            : "flex flex-col md:flex-row gap-6 items-center"
         }
       >
-        {/* Ring – original geometry/placement */}
+        {/* Ring */}
         <div className="relative w-44 h-44 shrink-0">
           <svg className="w-44 h-44 rotate-[-90deg]" viewBox="0 0 160 160">
             <circle
@@ -298,10 +298,10 @@ export default function WifiHealthMeter({
           </div>
         </div>
 
-        {/* Right column: explanation + trend + tiles */}
+        {/* Right column: explanation + trend + tiles + trust text */}
         <div className="flex-1 flex flex-col">
-          {/* Explanation + trend + nudge now flow from the top */}
-          <div className="flex flex-col">
+          {/* Explanation + trend + nudge */}
+          <div className="flex-1 flex flex-col justify-center">
             <p className="text-base sm:text-lg text-slate-800 whitespace-pre-wrap text-center">
               {explanation}
             </p>
@@ -320,7 +320,7 @@ export default function WifiHealthMeter({
             )}
           </div>
 
-          {/* Speed tiles pushed lower, under the centered text */}
+          {/* Speed tiles */}
           {!hidePerfTiles && (
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
               <SpeedTile label="Download" value={download} unit="Mbps" icon="↓" />
@@ -338,6 +338,16 @@ export default function WifiHealthMeter({
                 : ""}
             </div>
           )}
+
+          {/* Small trust text at bottom-center of the cell */}
+          <div className="mt-8 text-center">
+            <p className="text-xs sm:text-sm text-slate-500">
+              Free forever. No signup required.
+            </p>
+            <p className="mt-1 text-xs sm:text-sm text-slate-500">
+              Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
+            </p>
+          </div>
         </div>
       </div>
     </Wrapper>
