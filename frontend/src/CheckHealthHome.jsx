@@ -507,7 +507,7 @@ export default function CheckHealthHome() {
     );
   }
 
-  // ---------- RUNNING ----------
+    // ---------- RUNNING ----------
   if (phase === "running") {
     const pct = Math.round(progress);
     const color = progressHsl(pct);
@@ -537,22 +537,24 @@ export default function CheckHealthHome() {
             />
 
             {/* Gloss sweep overlay */}
-            <div className="absolute inset-[-10px] gloss-spin pointer-events-none" />
-
-            {/* Center text */}
-            {!showSuccess && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <div className="text-6xl font-extrabold" style={{ color }}>
-                  {pct}%
-                </div>
-                <div className="mt-2 text-sm tracking-widest uppercase text-slate-500 font-semibold">
-                  Running test
-                </div>
-                    <div className="mt-2 text-sm sm:text-base text-slate-700 max-w-[220px] mx-auto px-2">
-      Measuring Wi-Fi + ISP performance
-    </div>
+            <div className="absolute inset-0 overflow-hidden rounded-full pointer-events-none">
+              <div className="gloss-spin">
+                <div className="gloss" />
               </div>
-            )}
+            </div>
+
+            {/* Center content */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className="text-[2.75rem] sm:text-[3rem] font-semibold tracking-tight text-slate-900">
+                {pct}%
+              </div>
+              <div className="mt-1 text-xs sm:text-sm font-medium tracking-[0.18em] uppercase text-slate-400">
+                Running test
+              </div>
+              <div className="mt-2 text-[0.8rem] sm:text-xs text-slate-500 text-center max-w-[12rem] leading-snug">
+                Measuring Wi-Fi + ISP performance
+              </div>
+            </div>
 
             {/* Success burst */}
             {showSuccess && (
@@ -571,79 +573,100 @@ export default function CheckHealthHome() {
           <div className="mt-10 w-full max-w-xl">
             <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
               <div
-                className="h-full transition-all"
-                style={{ width: `${pct}%`, background: color }}
+                className="h-full rounded-full transition-all"
+                style={{
+                  width: `${pct}%`,
+                  background: `linear-gradient(90deg, hsl(210, 100%, 60%), ${color})`,
+                }}
               />
             </div>
-
             <div className="mt-3 text-sm text-slate-600 text-center font-medium">
               {stageText}
             </div>
           </div>
-        </div>
 
-<div className="mt-8 text-center">
-          <p className="text-xs sm:text-sm text-slate-500">
-            Free forever. No signup required.
-          </p>
-          <p className="mt-1 text-xs sm:text-sm text-slate-500">
-            Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
-          </p>
+          {/* Trust text below the button cell, same as on home */}
+          <div className="mt-8 text-center">
+            <p className="text-xs sm:text-sm text-slate-500">
+              Free forever. No signup required.
+            </p>
+            <p className="mt-1 text-xs sm:text-sm text-slate-500">
+              Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
+            </p>
+          </div>
         </div>
 
         <style>{`
           .gloss-spin {
-            background:
-              conic-gradient(
-                from 0deg,
-                rgba(255,255,255,0) 0deg,
-                rgba(255,255,255,0.0) 260deg,
-                rgba(255,255,255,0.75) 300deg,
-                rgba(255,255,255,0.0) 330deg,
-                rgba(255,255,255,0) 360deg
-              );
-            -webkit-mask: radial-gradient(transparent 60%, black 62%);
-            mask: radial-gradient(transparent 60%, black 62%);
-            filter: blur(2px);
-            animation: gloss-rotate 1.4s linear infinite;
-            opacity: 0.7;
-          }
-          @keyframes gloss-rotate {
-            to { transform: rotate(360deg); }
-          }
-
-          .success-burst {
-            position: relative;
-            width: 220px;
-            height: 220px;
+            position: absolute;
+            inset: -35%;
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: pop 0.35s ease-out forwards;
+            transform-origin: center;
+            animation: gloss-spin 3.5s linear infinite;
           }
-          .success-check {
-            font-size: 72px;
-            font-weight: 900;
-            color: #10b981;
-            text-shadow: 0 6px 18px rgba(16,185,129,0.35);
-            animation: check-in 0.45s ease-out forwards;
+          .gloss {
+            width: 120%;
+            height: 220%;
+            background: radial-gradient(
+              circle at 50% 0%,
+              rgba(255, 255, 255, 0.66),
+              transparent 56%
+            );
+            transform: rotate(-8deg);
+          }
+          @keyframes gloss-spin {
+            0% {
+              transform: rotate(0deg);
+            }
+            100% {
+              transform: rotate(360deg);
+            }
+          }
+
+          /* Success burst animations */
+          .success-burst {
+            position: relative;
+            width: 11rem;
+            height: 11rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
           .success-ring {
             position: absolute;
             inset: 0;
             border-radius: 9999px;
-            border: 6px solid rgba(16,185,129,0.9);
-            animation: ring 0.75s ease-out forwards;
+            border: 3px solid rgba(16, 185, 129, 0.5);
+            transform: scale(0.7);
+            opacity: 0;
+            animation: ring 1.5s ease-out infinite;
           }
           .success-ring.delay-1 {
-            animation-delay: 0.08s;
-            border-color: rgba(34,197,94,0.75);
+            animation-delay: 0.35s;
           }
           .success-ring.delay-2 {
-            animation-delay: 0.16s;
-            border-color: rgba(132,204,22,0.6);
+            animation-delay: 0.7s;
           }
-          @keyframes pop {
+          .success-check {
+            position: relative;
+            width: 3.2rem;
+            height: 3.2rem;
+            border-radius: 9999px;
+            background: radial-gradient(circle at 30% 0%, #6ee7b7, #059669);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            box-shadow:
+              0 18px 40px rgba(16, 185, 129, 0.45),
+              0 0 0 1px rgba(5, 150, 105, 0.35);
+            animation: check-in 0.7s ease-out forwards;
+          }
+          @keyframes burst {
             0% { transform: scale(0.7); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
           }
@@ -659,6 +682,7 @@ export default function CheckHealthHome() {
       </div>
     );
   }
+
 
     // ---------- DONE ----------
 return (
