@@ -352,16 +352,18 @@ function SpeedTile({ label, value, unit, icon }) {
       <div className="text-xs text-slate-500 uppercase tracking-wide">
         {label}
       </div>
-      {/* Value on the left, big arrow pushed to the right */}
-      <div className="mt-1 text-lg font-semibold text-slate-900 flex items-center justify-between">
-        <span>
+      {/* Two equal columns: left = value, right = centered arrow */}
+      <div className="mt-1 text-lg font-semibold text-slate-900 grid grid-cols-2 items-center">
+        <div>
           {safe ?? "—"}{" "}
           <span className="text-xs font-normal text-slate-500">{unit}</span>
-        </span>
+        </div>
         {icon && (
-          <span className="text-2xl leading-none text-slate-400">
-            {icon}
-          </span>
+          <div className="flex justify-center">
+            <span className="text-2xl leading-none text-slate-400">
+              {icon}
+            </span>
+          </div>
         )}
       </div>
     </div>
