@@ -261,7 +261,7 @@ export default function WifiHealthMeter({
         className={
           compactCentered
             ? "flex flex-col items-center text-center gap-4 min-h-[260px]"
-            : "flex flex-col md:flex-row gap-6 items-center"
+            : "flex flex-col md:flex-row gap-6 items-start"
         }
       >
         {/* Ring – original geometry/placement */}
@@ -300,8 +300,8 @@ export default function WifiHealthMeter({
 
         {/* Right column: explanation + trend + tiles */}
         <div className="flex-1 flex flex-col">
-          {/* Centered explanation + trend + nudge */}
-          <div className="flex-1 flex flex-col justify-center">
+          {/* Explanation + trend + nudge now flow from the top */}
+          <div className="flex flex-col">
             <p className="text-base sm:text-lg text-slate-800 whitespace-pre-wrap text-center">
               {explanation}
             </p>
