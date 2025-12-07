@@ -7,13 +7,13 @@ const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // Timing controls for the visual animation (behavior only, UI unchanged)
-const MIN_RUN_MS = 8000;      // minimum total time the test should appear to run
-const EXPECTED_MS = 32000;    // target duration to ease up toward ~99%
+const MIN_RUN_MS = 8000; // minimum total time the test should appear to run
+const EXPECTED_MS = 32000; // target duration to ease up toward ~99%
 
 function progressHsl(pct) {
   const hue =
     pct < 50 ? (pct / 50) * 55 : 55 + ((pct - 50) / 50) * 65; // red→yellow→green
-  return hsl(${hue}, 85%, 45%);
+  return `hsl(${hue}, 85%, 45%)`;
 }
 
 // ---------- LOCAL HEALTH / TREND HELPERS (LOGIC ONLY) ----------
@@ -75,23 +75,33 @@ function buildExplanation(score, label, download, upload, ping) {
 
   if (typeof download === "number") {
     if (download < 25) {
-      notes.push("Download speed is on the low side for modern streaming and multi-device use.");
+      notes.push(
+        "Download speed is on the low side for modern streaming and multi-device use."
+      );
     } else if (download < 50) {
-      notes.push("Download speed is adequate, but heavy streaming or large downloads may feel slower.");
+      notes.push(
+        "Download speed is adequate, but heavy streaming or large downloads may feel slower."
+      );
     }
   }
 
   if (typeof upload === "number") {
     if (upload < 5) {
-      notes.push("Upload speed may limit smooth video calls, cloud backups, or large file uploads.");
+      notes.push(
+        "Upload speed may limit smooth video calls, cloud backups, or large file uploads."
+      );
     }
   }
 
   if (typeof ping === "number") {
     if (ping > 80) {
-      notes.push("Latency to our test server is elevated, which can add delay to gaming or real-time calls.");
+      notes.push(
+        "Latency to our test server is elevated, which can add delay to gaming or real-time calls."
+      );
     } else if (ping < 40) {
-      notes.push("Latency to our test server is low, which is great for gaming and real-time apps.");
+      notes.push(
+        "Latency to our test server is low, which is great for gaming and real-time apps."
+      );
     }
   }
 
@@ -100,7 +110,11 @@ function buildExplanation(score, label, download, upload, ping) {
 }
 
 function buildTrendSummary(prev, curr) {
-  if (!prev) return { trend: null, trend_summary: "First scan — no previous data to compare." };
+  if (!prev)
+    return {
+      trend: null,
+      trend_summary: "First scan — no previous data to compare.",
+    };
 
   const dDelta =
     typeof curr.download === "number" && typeof prev.download === "number"
@@ -122,7 +136,7 @@ function buildTrendSummary(prev, curr) {
     const abs = Math.abs(delta);
     if (abs < 0.5) return;
     const dir = delta > 0 ? "increased" : "decreased";
-    parts.push(${label} ${dir} by ~${abs.toFixed(1)} Mbps);
+    parts.push(`${label} ${dir} by ~${abs.toFixed(1)} Mbps`);
   };
 
   describeSpeed("Download", dDelta);
@@ -130,9 +144,9 @@ function buildTrendSummary(prev, curr) {
 
   if (pDelta != null && Math.abs(pDelta) >= 3) {
     if (pDelta > 0) {
-      parts.push(Latency worsened by ~${Math.round(pDelta)} ms);
+      parts.push(`Latency worsened by ~${Math.round(pDelta)} ms`);
     } else {
-      parts.push(Latency improved by ~${Math.round(-pDelta)} ms);
+      parts.push(`Latency improved by ~${Math.round(-pDelta)} ms`);
     }
   }
 
@@ -170,8 +184,8 @@ export default function CheckHealthHome() {
   const progressRef = useRef(0);
 
   const fetchLatest = useCallback(async () => {
-    const r = await fetch(${API}/latest-report?t=${Date.now()});
-    if (!r.ok) throw new Error(latest-report ${r.status});
+    const r = await fetch(`${API}/latest-report?t=${Date.now()}`);
+    if (!r.ok) throw new Error(`latest-report ${r.status}`);
     const j = await r.json();
     setReport(j);
     setLastRefreshTs(Date.now());
@@ -205,7 +219,7 @@ export default function CheckHealthHome() {
   // -------- BROWSER SPEEDTEST HELPERS --------
 
   async function measureDownload(sizeMB = 8) {
-    const url = ${API}/speedtest/download?size_mb=${sizeMB}&cacheBust=${Date.now()};
+    const url = `${API}/speedtest/download?size_mb=${sizeMB}&cacheBust=${Date.now()}`;
     const start = performance.now();
 
     const res = await fetch(url);
@@ -253,11 +267,11 @@ export default function CheckHealthHome() {
     const blob = new Blob([new Uint8Array(sizeBytes)]);
     const start = performance.now();
 
-    const r = await fetch(${API}/speedtest/upload, {
+    const r = await fetch(`${API}/speedtest/upload`, {
       method: "POST",
       body: blob,
     });
-    if (!r.ok) throw new Error(speedtest/upload ${r.status});
+    if (!r.ok) throw new Error(`speedtest/upload ${r.status}`);
 
     const seconds = (performance.now() - start) / 1000;
     if (seconds === 0) return 0;
@@ -271,7 +285,7 @@ export default function CheckHealthHome() {
     for (let i = 0; i < rounds; i++) {
       const start = performance.now();
       try {
-        const r = await fetch(${API}/health?ts=${Date.now()});
+        const r = await fetch(`${API}/health?ts=${Date.now()}`);
         if (!r.ok) continue;
         const ms = performance.now() - start;
         samples.push(ms);
@@ -343,8 +357,8 @@ export default function CheckHealthHome() {
 
     try {
       const backendPromise = (async () => {
-        const r1 = await fetch(${API}/refresh-now, { method: "POST" });
-        if (!r1.ok) throw new Error(refresh-now ${r1.status});
+        const r1 = await fetch(`${API}/refresh-now`, { method: "POST" });
+        if (!r1.ok) throw new Error(`refresh-now ${r1.status}`);
         return await waitForPerf(12, 350);
       })();
 
@@ -359,7 +373,12 @@ export default function CheckHealthHome() {
         console.error("Backend refresh/analysis failed:", e);
       }
 
-      const currentMetrics = { download, upload, ping_ms: pingMs, ts: Date.now() };
+      const currentMetrics = {
+        download,
+        upload,
+        ping_ms: pingMs,
+        ts: Date.now(),
+      };
       let previousMetrics = null;
       try {
         const raw = localStorage.getItem("aiwifi_last_scan");
@@ -370,7 +389,10 @@ export default function CheckHealthHome() {
 
       const healthScore = computeHealthScore(download, upload, pingMs);
       const healthLabel = buildHealthLabel(healthScore);
-      const { trend, trend_summary } = buildTrendSummary(previousMetrics, currentMetrics);
+      const { trend, trend_summary } = buildTrendSummary(
+        previousMetrics,
+        currentMetrics
+      );
 
       try {
         localStorage.setItem("aiwifi_last_scan", JSON.stringify(currentMetrics));
@@ -385,7 +407,8 @@ export default function CheckHealthHome() {
         const base = backendReport || prev || {};
         const perf = {
           ...(base.performance || {}),
-          download_mbps: download ?? base?.performance?.download_mbps ?? null,
+          download_mbps:
+            download ?? base?.performance?.download_mbps ?? null,
           upload_mbps: upload ?? base?.performance?.upload_mbps ?? null,
           ping_ms: pingMs ?? base?.performance?.ping_ms ?? null,
           method: "browser-speedtest",
@@ -396,7 +419,13 @@ export default function CheckHealthHome() {
           ...baseScore,
           wifi_health_score: healthScore,
           wifi_health_label: healthLabel,
-          explanation: buildExplanation(healthScore, healthLabel, download, upload, pingMs),
+          explanation: buildExplanation(
+            healthScore,
+            healthLabel,
+            download,
+            upload,
+            pingMs
+          ),
           trend_summary: trend_summary ?? baseScore.trend_summary,
           trend: trend ?? baseScore.trend,
         };
@@ -451,9 +480,8 @@ export default function CheckHealthHome() {
   const heroCell =
     "w-full max-w-6xl mx-auto min-h-[78vh] rounded-3xl bg-white border border-slate-100 shadow-md p-10 sm:p-14 flex flex-col items-center justify-center";
 
-  // 🔧 Shorter results card (less empty space above/below)
   const doneCell =
-    "w-full max-w-6xl mx-auto min-h-[60vh] rounded-3xl bg-white border border-slate-100 shadow-md p-6 sm:p-8 flex flex-col items-center justify-center";
+    "w-full max-w-6xl mx-auto min-h-[68vh] rounded-3xl bg-white border border-slate-100 shadow-md p-6 sm:p-8 flex flex-col items-center justify-center";
 
   // ---------- IDLE ----------
   if (phase === "idle") {
@@ -514,89 +542,89 @@ export default function CheckHealthHome() {
     const color = progressHsl(pct);
 
     const stageText =
-      pct < 8 ? "Initializing scan…" :
-      pct < 35 ? "Scanning Wi-Fi environment…" :
-      pct < 65 ? "Running speed tests…" :
-      pct < 88 ? "Analyzing stability & congestion…" :
-      pct < 100 ? "Finalizing report…" :
-      "Complete";
+      pct < 8
+        ? "Initializing scan…"
+        : pct < 35
+        ? "Scanning Wi-Fi environment…"
+        : pct < 65
+        ? "Running speed tests…"
+        : pct < 88
+        ? "Analyzing stability & congestion…"
+        : pct < 100
+        ? "Finalizing report…"
+        : "Complete";
 
     return (
       <div className="space-y-6">
         <div className={heroCell}>
-          {/* Keep circle & bar vertically where the button was: center of the cell */}
-          <div className="flex-1 flex flex-col items-center justify-center">
-            <div className="relative w-72 h-72 sm:w-80 sm:h-80">
-              {/* Base ring */}
-              <div className="absolute inset-0 rounded-full border-[12px] border-slate-200" />
+          <div className="relative w-72 h-72 sm:w-80 sm:h-80">
+            {/* Base ring */}
+            <div className="absolute inset-0 rounded-full border-[12px] border-slate-200" />
 
-              {/* Progress ring */}
-              <div
-                className="absolute inset-0 rounded-full border-[12px] transition-all"
-                style={{
-                  borderColor: color,
-                  clipPath: inset(${100 - pct}% 0 0 0),
-                }}
-              />
+            {/* Progress ring */}
+            <div
+              className="absolute inset-0 rounded-full border-[12px] transition-all"
+              style={{
+                borderColor: color,
+                clipPath: `inset(${100 - pct}% 0 0 0)`,
+              }}
+            />
 
-              {/* Gloss sweep overlay */}
-              <div className="absolute inset-[-10px] gloss-spin pointer-events-none" />
+            {/* Gloss sweep overlay */}
+            <div className="absolute inset-[-10px] gloss-spin pointer-events-none" />
 
-              {/* Center text */}
-              {!showSuccess && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                  <div className="text-6xl font-extrabold" style={{ color }}>
-                    {pct}%
-                  </div>
-                  <div className="mt-2 text-sm tracking-widest uppercase text-slate-500 font-semibold">
-                    Running test
-                  </div>
-                  <div className="mt-2 text-sm sm:text-base text-slate-700 max-w-[220px] mx-auto px-2">
-                    Measuring Wi-Fi + ISP performance
-                  </div>
+            {/* Center text */}
+            {!showSuccess && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                <div className="text-6xl font-extrabold" style={{ color }}>
+                  {pct}%
                 </div>
-              )}
-
-              {/* Success burst */}
-              {showSuccess && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="success-burst">
-                    <div className="success-ring" />
-                    <div className="success-ring delay-1" />
-                    <div className="success-ring delay-2" />
-                    <div className="success-check">✓</div>
-                  </div>
+                <div className="mt-2 text-sm tracking-widest uppercase text-slate-500 font-semibold">
+                  Running test
                 </div>
-              )}
-            </div>
-
-            {/* Progress bar + stage text */}
-            <div className="mt-10 w-full max-w-xl">
-              <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
-                <div
-                  className="h-full transition-all"
-                  style={{ width: ${pct}%, background: color }}
-                />
+                <div className="mt-2 text-sm sm:text-base text-slate-700 max-w-[220px] mx-auto px-2">
+                  Measuring Wi-Fi + ISP performance
+                </div>
               </div>
+            )}
 
-              <div className="mt-3 text-sm text-slate-600 text-center font-medium">
-                {stageText}
+            {/* Success burst */}
+            {showSuccess && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="success-burst">
+                  <div className="success-ring" />
+                  <div className="success-ring delay-1" />
+                  <div className="success-ring delay-2" />
+                  <div className="success-check">✓</div>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
-          {/* Trust text inside the cell, same position as idle */}
-          <div className="mt-8 text-center">
-            <p className="text-xs sm:text-sm text-slate-500">
-              Free forever. No signup required.
-            </p>
-            <p className="mt-1 text-xs sm:text-sm text-slate-500">
-              Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
-            </p>
+          {/* Progress bar + stage text */}
+          <div className="mt-10 w-full max-w-xl">
+            <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
+              <div
+                className="h-full transition-all"
+                style={{ width: `${pct}%`, background: color }}
+              />
+            </div>
+            <div className="mt-3 text-sm text-slate-600 text-center font-medium">
+              {stageText}
+            </div>
           </div>
         </div>
 
-        <style>{
+        <div className="mt-8 text-center">
+          <p className="text-xs sm:text-sm text-slate-500">
+            Free forever. No signup required.
+          </p>
+          <p className="mt-1 text-xs sm:text-sm text-slate-500">
+            Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
+          </p>
+        </div>
+
+        <style>{`
           .gloss-spin {
             background:
               conic-gradient(
@@ -660,7 +688,7 @@ export default function CheckHealthHome() {
             0% { transform: scale(0.55); opacity: 0.9; }
             100% { transform: scale(1.25); opacity: 0; }
           }
-        }</style>
+        `}</style>
       </div>
     );
   }
