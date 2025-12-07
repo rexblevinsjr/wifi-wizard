@@ -451,8 +451,9 @@ export default function CheckHealthHome() {
   const heroCell =
     "w-full max-w-6xl mx-auto min-h-[78vh] rounded-3xl bg-white border border-slate-100 shadow-md p-10 sm:p-14 flex flex-col items-center justify-center";
 
+  // 🔧 Shorter results card (less empty space above/below)
   const doneCell =
-    "w-full max-w-6xl mx-auto min-h-[68vh] rounded-3xl bg-white border border-slate-100 shadow-md p-6 sm:p-8 flex flex-col items-center justify-center";
+    "w-full max-w-6xl mx-auto min-h-[60vh] rounded-3xl bg-white border border-slate-100 shadow-md p-6 sm:p-8 flex flex-col items-center justify-center";
 
   // ---------- IDLE ----------
   if (phase === "idle") {
@@ -523,65 +524,68 @@ export default function CheckHealthHome() {
     return (
       <div className="space-y-6">
         <div className={heroCell}>
-          <div className="relative w-72 h-72 sm:w-80 sm:h-80">
-            {/* Base ring */}
-            <div className="absolute inset-0 rounded-full border-[12px] border-slate-200" />
+          {/* Keep circle & bar vertically where the button was: center of the cell */}
+          <div className="flex-1 flex flex-col items-center justify-center">
+            <div className="relative w-72 h-72 sm:w-80 sm:h-80">
+              {/* Base ring */}
+              <div className="absolute inset-0 rounded-full border-[12px] border-slate-200" />
 
-            {/* Progress ring */}
-            <div
-              className="absolute inset-0 rounded-full border-[12px] transition-all"
-              style={{
-                borderColor: color,
-                clipPath: `inset(${100 - pct}% 0 0 0)`,
-              }}
-            />
-
-            {/* Gloss sweep overlay */}
-            <div className="absolute inset-[-10px] gloss-spin pointer-events-none" />
-
-            {/* Center text */}
-            {!showSuccess && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <div className="text-6xl font-extrabold" style={{ color }}>
-                  {pct}%
-                </div>
-                <div className="mt-2 text-sm tracking-widest uppercase text-slate-500 font-semibold">
-                  Running test
-                </div>
-                <div className="mt-2 text-sm sm:text-base text-slate-700 max-w-[220px] mx-auto px-2">
-                  Measuring Wi-Fi + ISP performance
-                </div>
-              </div>
-            )}
-
-            {/* Success burst */}
-            {showSuccess && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="success-burst">
-                  <div className="success-ring" />
-                  <div className="success-ring delay-1" />
-                  <div className="success-ring delay-2" />
-                  <div className="success-check">✓</div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Progress bar + stage text */}
-          <div className="mt-10 w-full max-w-xl">
-            <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
+              {/* Progress ring */}
               <div
-                className="h-full transition-all"
-                style={{ width: `${pct}%`, background: color }}
+                className="absolute inset-0 rounded-full border-[12px] transition-all"
+                style={{
+                  borderColor: color,
+                  clipPath: `inset(${100 - pct}% 0 0 0)`,
+                }}
               />
+
+              {/* Gloss sweep overlay */}
+              <div className="absolute inset-[-10px] gloss-spin pointer-events-none" />
+
+              {/* Center text */}
+              {!showSuccess && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                  <div className="text-6xl font-extrabold" style={{ color }}>
+                    {pct}%
+                  </div>
+                  <div className="mt-2 text-sm tracking-widest uppercase text-slate-500 font-semibold">
+                    Running test
+                  </div>
+                  <div className="mt-2 text-sm sm:text-base text-slate-700 max-w-[220px] mx-auto px-2">
+                    Measuring Wi-Fi + ISP performance
+                  </div>
+                </div>
+              )}
+
+              {/* Success burst */}
+              {showSuccess && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="success-burst">
+                    <div className="success-ring" />
+                    <div className="success-ring delay-1" />
+                    <div className="success-ring delay-2" />
+                    <div className="success-check">✓</div>
+                  </div>
+                </div>
+              )}
             </div>
 
-            <div className="mt-3 text-sm text-slate-600 text-center font-medium">
-              {stageText}
+            {/* Progress bar + stage text */}
+            <div className="mt-10 w-full max-w-xl">
+              <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
+                <div
+                  className="h-full transition-all"
+                  style={{ width: `${pct}%`, background: color }}
+                />
+              </div>
+
+              <div className="mt-3 text-sm text-slate-600 text-center font-medium">
+                {stageText}
+              </div>
             </div>
           </div>
 
-          {/* Small trust text at bottom-center of the cell (same place as idle) */}
+          {/* Trust text inside the cell, same position as idle */}
           <div className="mt-8 text-center">
             <p className="text-xs sm:text-sm text-slate-500">
               Free forever. No signup required.
