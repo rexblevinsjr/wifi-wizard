@@ -274,7 +274,7 @@ export default function CheckHealthHome() {
     if (!r.ok) throw new Error(`speedtest/upload ${r.status}`);
 
     const seconds = (performance.now() - start) / 1000;
-    if (seconds === 0) return 0;
+       if (seconds === 0) return 0;
     const mbps = (sizeBytes * 8) / 1_000_000 / seconds;
     return mbps;
   }
@@ -322,160 +322,163 @@ export default function CheckHealthHome() {
     finishTimerRef.current = null;
   };
 
-  const runTest = useCallback(async () => {
-    if (refreshing) return;
+  const runTest = useCallback(
+    async () => {
+      if (refreshing) return;
 
-    setRefreshing(true);
-    setErr(null);
-    setPhase("running");
-    setProgress(() => {
-      progressRef.current = 0;
-      return 0;
-    });
-    setShowSuccess(false);
-
-    stopTimers();
-    startRef.current = Date.now();
-
-    // Same visual behavior as before, but slower overall so 99 is reached later.
-    visualTimerRef.current = setInterval(() => {
-      const elapsed = Date.now() - startRef.current;
-
-      const raw = elapsed / EXPECTED_MS;
-      const t = clamp(raw, 0, 1);
-
-      const eased = 1 - Math.pow(1 - t, 2); // ease-out
-      const target = eased * 99;
-
-      setProgress((p) => {
-        const next = p + (target - p) * 0.045; // smooth approach
-        const clamped = clamp(next, 0, 99);
-        progressRef.current = clamped;
-        return clamped;
+      setRefreshing(true);
+      setErr(null);
+      setPhase("running");
+      setProgress(() => {
+        progressRef.current = 0;
+        return 0;
       });
-    }, 140);
+      setShowSuccess(false);
 
-    try {
-      const backendPromise = (async () => {
-        const r1 = await fetch(`${API}/refresh-now`, { method: "POST" });
-        if (!r1.ok) throw new Error(`refresh-now ${r1.status}`);
-        return await waitForPerf(12, 350);
-      })();
-
-      const pingMs = await measurePing();
-      const download = await measureDownload();
-      const upload = await measureUpload();
-
-      let backendReport = null;
-      try {
-        backendReport = await backendPromise;
-      } catch (e) {
-        console.error("Backend refresh/analysis failed:", e);
-      }
-
-      const currentMetrics = {
-        download,
-        upload,
-        ping_ms: pingMs,
-        ts: Date.now(),
-      };
-      let previousMetrics = null;
-      try {
-        const raw = localStorage.getItem("aiwifi_last_scan");
-        if (raw) previousMetrics = JSON.parse(raw);
-      } catch {
-        previousMetrics = null;
-      }
-
-      const healthScore = computeHealthScore(download, upload, pingMs);
-      const healthLabel = buildHealthLabel(healthScore);
-      const { trend, trend_summary } = buildTrendSummary(
-        previousMetrics,
-        currentMetrics
-      );
-
-      try {
-        localStorage.setItem("aiwifi_last_scan", JSON.stringify(currentMetrics));
-      } catch {
-        // ignore storage failure
-      }
-
-      if (visualTimerRef.current) clearInterval(visualTimerRef.current);
-      visualTimerRef.current = null;
-
-      setReport((prev) => {
-        const base = backendReport || prev || {};
-        const perf = {
-          ...(base.performance || {}),
-          download_mbps:
-            download ?? base?.performance?.download_mbps ?? null,
-          upload_mbps: upload ?? base?.performance?.upload_mbps ?? null,
-          ping_ms: pingMs ?? base?.performance?.ping_ms ?? null,
-          method: "browser-speedtest",
-        };
-
-        const baseScore = base.score || {};
-        const mergedScore = {
-          ...baseScore,
-          wifi_health_score: healthScore,
-          wifi_health_label: healthLabel,
-          explanation: buildExplanation(
-            healthScore,
-            healthLabel,
-            download,
-            upload,
-            pingMs
-          ),
-          trend_summary: trend_summary ?? baseScore.trend_summary,
-          trend: trend ?? baseScore.trend,
-        };
-
-        const merged = { ...base, performance: perf, score: mergedScore };
-        setLastRefreshTs(Date.now());
-        return merged;
-      });
-
-      // Ensure the total test doesn't feel suspiciously instant
-      const totalElapsed = Date.now() - startRef.current;
-      if (totalElapsed < MIN_RUN_MS) {
-        await sleep(MIN_RUN_MS - totalElapsed);
-      }
-
-      // Finish 99 → 100 over ~700ms, then success burst, then 'done'.
-      const finishStart = Date.now();
-      const finishDur = 700;
-      const startFrom = Math.max(progressRef.current, 0);
-
-      finishTimerRef.current = setInterval(() => {
-        const t = Date.now() - finishStart;
-        const k = clamp(t / finishDur, 0, 1);
-        const val = startFrom + (100 - startFrom) * k;
-        setProgress(val);
-        progressRef.current = val;
-
-        if (k >= 1) {
-          clearInterval(finishTimerRef.current);
-          finishTimerRef.current = null;
-          setProgress(100);
-          progressRef.current = 100;
-
-          setShowSuccess(true);
-
-          setTimeout(() => {
-            setShowSuccess(false);
-            setPhase("done");
-          }, 900);
-        }
-      }, 16);
-    } catch (e) {
       stopTimers();
-      console.error(e);
-      setErr("Test failed — backend not running on port 8787.");
-      setPhase("idle");
-    } finally {
-      setRefreshing(false);
-    }
-  }, [refreshing, waitForPerf]);
+      startRef.current = Date.now();
+
+      // Same visual behavior as before, but slower overall so 99 is reached later.
+      visualTimerRef.current = setInterval(() => {
+        const elapsed = Date.now() - startRef.current;
+
+        const raw = elapsed / EXPECTED_MS;
+        const t = clamp(raw, 0, 1);
+
+        const eased = 1 - Math.pow(1 - t, 2); // ease-out
+        const target = eased * 99;
+
+        setProgress((p) => {
+          const next = p + (target - p) * 0.045; // smooth approach
+          const clamped = clamp(next, 0, 99);
+          progressRef.current = clamped;
+          return clamped;
+        });
+      }, 140);
+
+      try {
+        const backendPromise = (async () => {
+          const r1 = await fetch(`${API}/refresh-now`, { method: "POST" });
+          if (!r1.ok) throw new Error(`refresh-now ${r1.status}`);
+          return await waitForPerf(12, 350);
+        })();
+
+        const pingMs = await measurePing();
+        const download = await measureDownload();
+        const upload = await measureUpload();
+
+        let backendReport = null;
+        try {
+          backendReport = await backendPromise;
+        } catch (e) {
+          console.error("Backend refresh/analysis failed:", e);
+        }
+
+        const currentMetrics = {
+          download,
+          upload,
+          ping_ms: pingMs,
+          ts: Date.now(),
+        };
+        let previousMetrics = null;
+        try {
+          const raw = localStorage.getItem("aiwifi_last_scan");
+          if (raw) previousMetrics = JSON.parse(raw);
+        } catch {
+          previousMetrics = null;
+        }
+
+        const healthScore = computeHealthScore(download, upload, pingMs);
+        const healthLabel = buildHealthLabel(healthScore);
+        const { trend, trend_summary } = buildTrendSummary(
+          previousMetrics,
+          currentMetrics
+        );
+
+        try {
+          localStorage.setItem("aiwifi_last_scan", JSON.stringify(currentMetrics));
+        } catch {
+          // ignore storage failure
+        }
+
+        if (visualTimerRef.current) clearInterval(visualTimerRef.current);
+        visualTimerRef.current = null;
+
+        setReport((prev) => {
+          const base = backendReport || prev || {};
+          const perf = {
+            ...(base.performance || {}),
+            download_mbps:
+              download ?? base?.performance?.download_mbps ?? null,
+            upload_mbps: upload ?? base?.performance?.upload_mbps ?? null,
+            ping_ms: pingMs ?? base?.performance?.ping_ms ?? null,
+            method: "browser-speedtest",
+          };
+
+          const baseScore = base.score || {};
+          const mergedScore = {
+            ...baseScore,
+            wifi_health_score: healthScore,
+            wifi_health_label: healthLabel,
+            explanation: buildExplanation(
+              healthScore,
+              healthLabel,
+              download,
+              upload,
+              pingMs
+            ),
+            trend_summary: trend_summary ?? baseScore.trend_summary,
+            trend: trend ?? baseScore.trend,
+          };
+
+          const merged = { ...base, performance: perf, score: mergedScore };
+          setLastRefreshTs(Date.now());
+          return merged;
+        });
+
+        // Ensure the total test doesn't feel suspiciously instant
+        const totalElapsed = Date.now() - startRef.current;
+        if (totalElapsed < MIN_RUN_MS) {
+          await sleep(MIN_RUN_MS - totalElapsed);
+        }
+
+        // Finish 99 → 100 over ~700ms, then success burst, then 'done'.
+        const finishStart = Date.now();
+        const finishDur = 700;
+        const startFrom = Math.max(progressRef.current, 0);
+
+        finishTimerRef.current = setInterval(() => {
+          const t = Date.now() - finishStart;
+          const k = clamp(t / finishDur, 0, 1);
+          const val = startFrom + (100 - startFrom) * k;
+          setProgress(val);
+          progressRef.current = val;
+
+          if (k >= 1) {
+            clearInterval(finishTimerRef.current);
+            finishTimerRef.current = null;
+            setProgress(100);
+            progressRef.current = 100;
+
+            setShowSuccess(true);
+
+            setTimeout(() => {
+              setShowSuccess(false);
+              setPhase("done");
+            }, 900);
+          }
+        }, 16);
+      } catch (e) {
+        stopTimers();
+        console.error(e);
+        setErr("Test failed — backend not running on port 8787.");
+        setPhase("idle");
+      } finally {
+        setRefreshing(false);
+      }
+    },
+    [refreshing, waitForPerf]
+  );
 
   const heroCell =
     "w-full max-w-6xl mx-auto min-h-[78vh] rounded-3xl bg-white border border-slate-100 shadow-md p-10 sm:p-14 flex flex-col items-center justify-center";
@@ -613,15 +616,16 @@ export default function CheckHealthHome() {
               {stageText}
             </div>
           </div>
-        </div>
 
-        <div className="mt-8 text-center">
-          <p className="text-xs sm:text-sm text-slate-500">
-            Free forever. No signup required.
-          </p>
-          <p className="mt-1 text-xs sm:text-sm text-slate-500">
-            Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
-          </p>
+          {/* ✅ Trust text inside the hero cell, same place as idle */}
+          <div className="mt-8 text-center">
+            <p className="text-xs sm:text-sm text-slate-500">
+              Free forever. No signup required.
+            </p>
+            <p className="mt-1 text-xs sm:text-sm text-slate-500">
+              Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
+            </p>
+          </div>
         </div>
 
         <style>{`
