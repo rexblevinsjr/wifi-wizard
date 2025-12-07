@@ -448,40 +448,54 @@ export default function CheckHealthHome() {
     }
   }, [refreshing, waitForPerf]);
 
-  const heroCell =
+    const heroCell =
     "w-full max-w-6xl mx-auto min-h-[78vh] rounded-3xl bg-white border border-slate-100 shadow-md p-10 sm:p-14 flex flex-col items-center justify-center";
-  const doneCell =
-    "w-full max-w-6xl mx-auto rounded-3xl bg-white border border-slate-100 shadow-md p-6 sm:p-8 flex flex-col justify-center";
 
-  // ---------- IDLE ----------
+  const doneCell =
+    "w-full max-w-6xl mx-auto min-h-[78vh] rounded-3xl bg-white border border-slate-100 shadow-md p-6 sm:p-8 flex flex-col items-center justify-center";
+
+    // ---------- IDLE ----------
   if (phase === "idle") {
     return (
       <div className="space-y-6">
         <div className={heroCell}>
-          <button
-            onClick={runTest}
-            disabled={refreshing}
-            className="
-              group relative flex items-center justify-center
-              w-72 h-72 sm:w-80 sm:h-80
-              rounded-full bg-slate-900 text-white
-              shadow-xl hover:shadow-2xl hover:bg-slate-800
-              transition active:scale-[0.985]
-            "
-          >
-            <div className="absolute inset-4 rounded-full border-2 border-white/15 group-hover:border-white/25 transition" />
-            <div className="text-center px-6">
-              <div className="text-sm tracking-widest uppercase text-white/70 font-semibold">
-                Check
+          {/* Centered button */}
+          <div className="flex-1 flex items-center justify-center">
+            <button
+              onClick={runTest}
+              disabled={refreshing}
+              className="
+                group relative flex items-center justify-center
+                w-72 h-72 sm:w-80 sm:h-80
+                rounded-full bg-slate-900 text-white
+                shadow-xl hover:shadow-2xl hover:bg-slate-800
+                transition active:scale-[0.985]
+              "
+            >
+              <div className="absolute inset-4 rounded-full border-2 border-white/15 group-hover:border-white/25 transition" />
+              <div className="text-center px-6">
+                <div className="text-sm tracking-widest uppercase text-white/70 font-semibold">
+                  Check
+                </div>
+                <div className="mt-2 text-3xl sm:text-4xl font-extrabold">
+                  Network Health
+                </div>
+                <div className="mt-3 text-sm sm:text-base text-white/70 max-w-[220px] mx-auto">
+                  Run an advanced Wi-Fi scan + speed test
+                </div>
               </div>
-              <div className="mt-2 text-3xl sm:text-4xl font-extrabold">
-                Network Health
-              </div>
-              <div className="mt-3 text-sm sm:text-base text-white/70 max-w-[220px] mx-auto">
-                Run an advanced Wi-Fi scan + speed test
-              </div>
-            </div>
-          </button>
+            </button>
+          </div>
+
+          {/* Small trust text at bottom-center of the cell */}
+          <div className="mt-8 text-center">
+            <p className="text-xs sm:text-sm text-slate-500">
+              Free forever. No signup required.
+            </p>
+            <p className="mt-1 text-xs sm:text-sm text-slate-500">
+              Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
+            </p>
+          </div>
         </div>
 
         {err && (

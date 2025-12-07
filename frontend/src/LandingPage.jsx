@@ -28,16 +28,6 @@ export default function LandingPage() {
         <CheckHealthHome />
       </section>
 
-      {/* ⭐ RESTORED TRUST TEXT EXACTLY LIKE BEFORE ⭐ */}
-      <section className="text-center">
-        <p className="text-xs sm:text-sm text-slate-500">
-          Free forever. No signup required.
-        </p>
-        <p className="mt-1 text-xs sm:text-sm text-slate-500">
-          Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
-        </p>
-      </section>
-
       {/* PRO coming soon + email capture */}
       <section className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-100 shadow-sm">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
