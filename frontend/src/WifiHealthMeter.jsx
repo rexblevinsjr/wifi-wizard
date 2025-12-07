@@ -304,7 +304,7 @@ export default function WifiHealthMeter({
           <div className="flex flex-col">
             {/* Explanation + trend + nudge */}
             <div className="flex-1 flex flex-col justify-center">
-              <p className="mt-4 text-base sm:text-lg text-slate-800 whitespace-pre-wrap text-center">
+              <p className="mt-3 text-base sm:text-lg text-slate-800 whitespace-pre-wrap text-center">
                 {explanation}
               </p>
 
@@ -324,7 +324,7 @@ export default function WifiHealthMeter({
 
             {/* Speed tiles */}
             {!hidePerfTiles && (
-              <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <SpeedTile
                   label="Download"
                   value={download}
