@@ -301,9 +301,9 @@ export default function WifiHealthMeter({
         {/* Right column: explanation + trend + tiles + trust text */}
         <div className="flex-1 flex flex-col">
           {/* Top stack: explanation, trend, nudge, tiles, passive text */}
-          <div className="flex flex-col flex-1 justify-center">
+          <div className="flex flex-col">
             {/* Explanation + trend + nudge */}
-            <div className="flex flex-col">
+            <div className="flex-1 flex flex-col justify-center">
               <p className="mt-4 text-base sm:text-lg text-slate-800 whitespace-pre-wrap text-center">
                 {explanation}
               </p>
@@ -347,8 +347,8 @@ export default function WifiHealthMeter({
             )}
           </div>
 
-          {/* Small trust text pushed to the bottom of the card */}
-          <div className="mt-auto text-center pt-4">
+          {/* Small trust text anchored much lower in the cell */}
+          <div className="mt-16 text-center pt-2">
             <p className="text-xs sm:text-sm text-slate-500">
               Free forever. No signup required.
             </p>
