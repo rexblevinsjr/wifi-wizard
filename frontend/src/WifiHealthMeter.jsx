@@ -300,61 +300,78 @@ export default function WifiHealthMeter({
 
         {/* Right column: explanation + trend + tiles + trust text */}
         <div className="flex-1 flex flex-col">
-          {/* Top stack: explanation, trend, nudge, tiles, passive text */}
-          <div className="flex flex-col">
-            {/* Explanation + trend + nudge */}
-            <div className="flex-1 flex flex-col justify-center">
-              <p className="mt-4 text-base sm:text-lg text-slate-800 whitespace-pre-wrap text-center">
-                {explanation}
-              </p>
-
-              {trendSummary && (
-                <p className="mt-3 text-sm text-slate-600 whitespace-pre-wrap text-center">
-                  {trendSummary}
+          {/* Wrapper to push AI overview + tiles + trust text lower while preserving internal spacing */}
+          <div
+            className={
+              variant === "full"
+                ? "mt-10 md:mt-20 flex flex-col"
+                : "flex flex-col"
+            }
+          >
+            {/* Top stack: explanation, trend, nudge, tiles, passive text */}
+            <div className="flex flex-col">
+              {/* Explanation + trend + nudge */}
+              <div className="flex-1 flex flex-col justify-center">
+                <p className="mt-4 text-base sm:text-lg text-slate-800 whitespace-pre-wrap text-center">
+                  {explanation}
                 </p>
+
+                {trendSummary && (
+                  <p className="mt-3 text-sm text-slate-600 whitespace-pre-wrap text-center">
+                    {trendSummary}
+                  </p>
+                )}
+
+                {shouldNudge && (
+                  <div className="mt-3 text-sm text-amber-700 bg-amber-50 border border-amber-100 p-2 rounded-lg">
+                    Health is low. Hit <b>Fix My Wi-Fi</b> for deeper analysis
+                    and fixes.
+                  </div>
+                )}
+              </div>
+
+              {/* Speed tiles */}
+              {!hidePerfTiles && (
+                <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <SpeedTile
+                    label="Download"
+                    value={download}
+                    unit="Mbps"
+                    icon="↓"
+                  />
+                  <SpeedTile
+                    label="Upload"
+                    value={upload}
+                    unit="Mbps"
+                    icon="↑"
+                  />
+                  <SpeedTile label="Ping" value={ping} unit="ms" icon="↔" />
+                </div>
               )}
 
-              {shouldNudge && (
-                <div className="mt-3 text-sm text-amber-700 bg-amber-50 border border-amber-100 p-2 rounded-lg">
-                  Health is low. Hit <b>Fix My Wi-Fi</b> for deeper analysis and
-                  fixes.
+              {/* Passive text for compact/monitor variant */}
+              {variant === "compact" && passiveIntervalMs && (
+                <div className="mt-4 text-[11px] text-slate-500 text-center md:text-left">
+                  Passively updating every {Math.round(passiveIntervalMs / 1000)}s
+                  {lastRefreshTs
+                    ? ` • ${formatRelativeRefresh(
+                        lastRefreshTs,
+                        "Last update"
+                      )}`
+                    : ""}
                 </div>
               )}
             </div>
 
-            {/* Speed tiles */}
-            {!hidePerfTiles && (
-              <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <SpeedTile
-                  label="Download"
-                  value={download}
-                  unit="Mbps"
-                  icon="↓"
-                />
-                <SpeedTile label="Upload" value={upload} unit="Mbps" icon="↑" />
-                <SpeedTile label="Ping" value={ping} unit="ms" icon="↔" />
-              </div>
-            )}
-
-            {/* Passive text for compact/monitor variant */}
-            {variant === "compact" && passiveIntervalMs && (
-              <div className="mt-4 text-[11px] text-slate-500 text-center md:text-left">
-                Passively updating every {Math.round(passiveIntervalMs / 1000)}s
-                {lastRefreshTs
-                  ? ` • ${formatRelativeRefresh(lastRefreshTs, "Last update")}`
-                  : ""}
-              </div>
-            )}
-          </div>
-
-          {/* Small trust text anchored much lower in the cell */}
-          <div className="mt-16 text-center pt-2">
-            <p className="text-xs sm:text-sm text-slate-500">
-              Free forever. No signup required.
-            </p>
-            <p className="mt-1 text-xs sm:text-sm text-slate-500">
-              Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
-            </p>
+            {/* Small trust text anchored much lower in the cell */}
+            <div className="mt-16 text-center pt-2">
+              <p className="text-xs sm:text-sm text-slate-500">
+                Free forever. No signup required.
+              </p>
+              <p className="mt-1 text-xs sm:text-sm text-slate-500">
+                Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
+              </p>
+            </div>
           </div>
         </div>
       </div>
