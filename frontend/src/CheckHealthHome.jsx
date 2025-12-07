@@ -177,7 +177,6 @@ export default function CheckHealthHome() {
   const [progress, setProgress] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const ctaRef = useRef(null);
   const visualTimerRef = useRef(null);
   const finishTimerRef = useRef(null);
   const startRef = useRef(0);
@@ -228,7 +227,6 @@ export default function CheckHealthHome() {
     let bytes = 0;
 
     if (reader) {
-      // Streamed response
       // eslint-disable-next-line no-constant-condition
       while (true) {
         const { done, value } = await reader.read();
@@ -243,19 +241,19 @@ export default function CheckHealthHome() {
     const seconds = (performance.now() - start) / 1000;
     if (seconds === 0) return 0;
 
-    // Raw single-stream throughput browser → Render
+    // Raw single-stream throughput browser → server
     let mbps = (bytes * 8) / 1_000_000 / seconds;
 
-    // 🔧 Calibration: nudge closer to what users see on multi-stream tests
+    // Calibration nudges
     if (mbps > 0) {
       if (mbps < 10) {
-        // very slow / bad lines → report honestly
+        // leave very slow lines mostly as-is
       } else if (mbps < 50) {
-        mbps *= 1.08; // +8%
+        mbps *= 1.08;
       } else if (mbps < 100) {
-        mbps *= 1.18; // +18%
+        mbps *= 1.18;
       } else {
-        mbps *= 1.25; // +25% on fast connections
+        mbps *= 1.25;
       }
     }
 
@@ -308,7 +306,6 @@ export default function CheckHealthHome() {
       rttMs = (arr[mid - 1] + arr[mid]) / 2;
     }
 
-    // Calibrate RTT down a bit to approximate "ping" users expect
     const approxPing = Math.max(5, rttMs * 0.25);
     return approxPing;
   }
@@ -338,10 +335,9 @@ export default function CheckHealthHome() {
       stopTimers();
       startRef.current = Date.now();
 
-      // Same visual behavior as before, but slower overall so 99 is reached later.
+      // visual animation towards ~99%
       visualTimerRef.current = setInterval(() => {
         const elapsed = Date.now() - startRef.current;
-
         const raw = elapsed / EXPECTED_MS;
         const t = clamp(raw, 0, 1);
 
@@ -349,7 +345,7 @@ export default function CheckHealthHome() {
         const target = eased * 99;
 
         setProgress((p) => {
-          const next = p + (target - p) * 0.045; // smooth approach
+          const next = p + (target - p) * 0.045;
           const clamped = clamp(next, 0, 99);
           progressRef.current = clamped;
           return clamped;
@@ -439,13 +435,13 @@ export default function CheckHealthHome() {
           return merged;
         });
 
-        // Ensure the total test doesn't feel suspiciously instant
+        // ensure minimum perceived run time
         const totalElapsed = Date.now() - startRef.current;
         if (totalElapsed < MIN_RUN_MS) {
           await sleep(MIN_RUN_MS - totalElapsed);
         }
 
-        // Finish 99 → 100 over ~700ms, then success burst, then 'done'.
+        // finish 99 → 100 with success burst, then phase "done"
         const finishStart = Date.now();
         const finishDur = 700;
         const startFrom = Math.max(progressRef.current, 0);
@@ -486,7 +482,6 @@ export default function CheckHealthHome() {
   const heroCell =
     "w-full max-w-6xl mx-auto min-h-[78vh] rounded-3xl bg-white border border-slate-100 shadow-md p-10 sm:p-14 flex flex-col items-center justify-center";
 
-  // 🔧 Shorter results card (less empty space above/below)
   const doneCell =
     "w-full max-w-6xl mx-auto min-h-[52vh] rounded-3xl bg-white border border-slate-100 shadow-md p-6 sm:p-8 flex flex-col items-center justify-center";
 
@@ -523,7 +518,7 @@ export default function CheckHealthHome() {
             </button>
           </div>
 
-          {/* Small trust text at bottom-center of the cell */}
+          {/* Trust text */}
           <div className="mt-8 text-center">
             <p className="text-xs sm:text-sm text-slate-500">
               Free forever. No signup required.
@@ -543,7 +538,7 @@ export default function CheckHealthHome() {
     );
   }
 
-    // ---------- RUNNING ----------
+  // ---------- RUNNING ----------
   if (phase === "running") {
     const pct = Math.round(progress);
     const color = progressHsl(pct);
@@ -579,7 +574,7 @@ export default function CheckHealthHome() {
                 }}
               />
 
-              {/* Gloss sweep overlay ON THE RING */}
+              {/* Gloss overlay on the ring */}
               <div className="absolute inset-[-10px] gloss-spin pointer-events-none" />
 
               {/* Center text */}
@@ -610,7 +605,7 @@ export default function CheckHealthHome() {
               )}
             </div>
 
-            {/* Progress bar + stage text pulled closer to circle */}
+            {/* Progress bar + stage text, pulled up closer to the circle */}
             <div className="mt-3 w-full max-w-xl">
               <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
                 <div
@@ -625,7 +620,7 @@ export default function CheckHealthHome() {
             </div>
           </div>
 
-          {/* Trust text inside the cell, same spot as idle */}
+          {/* Trust text */}
           <div className="mt-8 text-center">
             <p className="text-xs sm:text-sm text-slate-500">
               Free forever. No signup required.
@@ -704,30 +699,6 @@ export default function CheckHealthHome() {
       </div>
     );
   }
-
-  // ---------- DONE ----------
-  return (
-    <div className="space-y-6">
-      <div className={doneCell}>
-        <WifiHealthMeter
-          variant="full"
-          embedded
-          report={report}
-          onRefreshNow={runTest}
-          refreshing={refreshing}
-          lastRefreshTs={lastRefreshTs}
-          refreshLabel="Run test again"
-        />
-      </div>
-
-      {err && (
-        <div className="max-w-6xl mx-auto p-3 rounded-xl bg-rose-50 border border-rose-100 text-rose-700 text-sm">
-          {err}
-        </div>
-      )}
-    </div>
-  );
-}
 
   // ---------- DONE ----------
   return (
