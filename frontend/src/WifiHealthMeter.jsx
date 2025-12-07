@@ -348,7 +348,7 @@ export default function WifiHealthMeter({
           </div>
 
           {/* Small trust text anchored much lower in the cell */}
-          <div className="mt-auto text-center pt-2">
+          <div className="mt-16 text-center pt-2">
             <p className="text-xs sm:text-sm text-slate-500">
               Free forever. No signup required.
             </p>
