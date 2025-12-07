@@ -323,9 +323,9 @@ export default function WifiHealthMeter({
           {/* Speed tiles pushed lower, under the centered text */}
           {!hidePerfTiles && (
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <SpeedTile label="Download" value={download} unit="Mbps" />
-              <SpeedTile label="Upload" value={upload} unit="Mbps" />
-              <SpeedTile label="Ping" value={ping} unit="ms" />
+              <SpeedTile label="Download" value={download} unit="Mbps" icon="↓" />
+              <SpeedTile label="Upload" value={upload} unit="Mbps" icon="↑" />
+              <SpeedTile label="Ping" value={ping} unit="ms" icon="↔" />
             </div>
           )}
 
@@ -344,7 +344,7 @@ export default function WifiHealthMeter({
   );
 }
 
-function SpeedTile({ label, value, unit }) {
+function SpeedTile({ label, value, unit, icon }) {
   const safe = Number.isFinite(Number(value)) ? Number(value).toFixed(1) : null;
 
   return (
@@ -352,9 +352,16 @@ function SpeedTile({ label, value, unit }) {
       <div className="text-xs text-slate-500 uppercase tracking-wide">
         {label}
       </div>
-      <div className="mt-1 text-lg font-semibold text-slate-900">
-        {safe ?? "—"}{" "}
-        <span className="text-xs font-normal text-slate-500">{unit}</span>
+      <div className="mt-1 text-lg font-semibold text-slate-900 flex items-center gap-1">
+        <span>
+          {safe ?? "—"}{" "}
+          <span className="text-xs font-normal text-slate-500">{unit}</span>
+        </span>
+        {icon && (
+          <span className="text-sm text-slate-500">
+            {icon}
+          </span>
+        )}
       </div>
     </div>
   );
