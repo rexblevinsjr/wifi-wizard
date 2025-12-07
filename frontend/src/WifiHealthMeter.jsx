@@ -299,14 +299,15 @@ export default function WifiHealthMeter({
         </div>
 
         {/* Right column: explanation + trend + tiles */}
-        <div className="flex-1 flex flex-col justify-between">
-          <div>
-                <p className="text-base sm:text-lg text-slate-800 whitespace-pre-wrap text-center md:text-left">
-  {explanation}
-</p>
+        <div className="flex-1 flex flex-col">
+          {/* Centered explanation + trend + nudge */}
+          <div className="flex-1 flex flex-col justify-center">
+            <p className="text-base sm:text-lg text-slate-800 whitespace-pre-wrap text-center">
+              {explanation}
+            </p>
 
             {trendSummary && (
-              <p className="mt-3 text-sm text-slate-600 whitespace-pre-wrap text-center md:text-left">
+              <p className="mt-3 text-sm text-slate-600 whitespace-pre-wrap text-center">
                 {trendSummary}
               </p>
             )}
@@ -317,15 +318,16 @@ export default function WifiHealthMeter({
                 fixes.
               </div>
             )}
-
-            {!hidePerfTiles && (
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <SpeedTile label="Download" value={download} unit="Mbps" />
-                <SpeedTile label="Upload" value={upload} unit="Mbps" />
-                <SpeedTile label="Ping" value={ping} unit="ms" />
-              </div>
-            )}
           </div>
+
+          {/* Speed tiles pushed lower, under the centered text */}
+          {!hidePerfTiles && (
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <SpeedTile label="Download" value={download} unit="Mbps" />
+              <SpeedTile label="Upload" value={upload} unit="Mbps" />
+              <SpeedTile label="Ping" value={ping} unit="ms" />
+            </div>
+          )}
 
           {/* Passive text for compact/monitor variant */}
           {variant === "compact" && passiveIntervalMs && (
