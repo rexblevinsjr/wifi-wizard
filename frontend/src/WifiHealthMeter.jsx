@@ -304,7 +304,7 @@ export default function WifiHealthMeter({
           <div className="flex flex-col">
             {/* Explanation + trend + nudge */}
             <div className="flex-1 flex flex-col justify-center">
-              <p className="text-base sm:text-lg text-slate-800 whitespace-pre-wrap text-center">
+              <p className="mt-4 text-base sm:text-lg text-slate-800 whitespace-pre-wrap text-center">
                 {explanation}
               </p>
 
