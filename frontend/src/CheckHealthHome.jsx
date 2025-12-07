@@ -452,7 +452,7 @@ export default function CheckHealthHome() {
     "w-full max-w-6xl mx-auto min-h-[78vh] rounded-3xl bg-white border border-slate-100 shadow-md p-10 sm:p-14 flex flex-col items-center justify-center";
 
   const doneCell =
-    "w-full max-w-6xl mx-auto min-h-[78vh] rounded-3xl bg-white border border-slate-100 shadow-md p-6 sm:p-8 flex flex-col items-center justify-center";
+  "w-full max-w-6xl mx-auto min-h-[68vh] rounded-3xl bg-white border border-slate-100 shadow-md p-6 sm:p-8 flex flex-col items-center justify-center";
 
     // ---------- IDLE ----------
   if (phase === "idle") {
@@ -582,6 +582,15 @@ export default function CheckHealthHome() {
           </div>
         </div>
 
+<div className="mt-8 text-center">
+          <p className="text-xs sm:text-sm text-slate-500">
+            Free forever. No signup required.
+          </p>
+          <p className="mt-1 text-xs sm:text-sm text-slate-500">
+            Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
+          </p>
+        </div>
+
         <style>{`
           .gloss-spin {
             background:
@@ -652,25 +661,24 @@ export default function CheckHealthHome() {
   }
 
     // ---------- DONE ----------
-  return (
-    <div className="space-y-6">
-      <div className={doneCell}>
-        <WifiHealthMeter
-          variant="full"
-          embedded
-          report={report}
-          onRefreshNow={runTest}
-          refreshing={refreshing}
-          lastRefreshTs={lastRefreshTs}
-          refreshLabel="Run test again"
-        />
-      </div>
-
-      {err && (
-        <div className="max-w-6xl mx-auto p-3 rounded-xl bg-rose-50 border border-rose-100 text-rose-700 text-sm">
-          {err}
-        </div>
-      )}
+return (
+  <div className="space-y-6">
+    <div className={doneCell}>
+      <WifiHealthMeter
+        variant="full"
+        embedded
+        report={report}
+        onRefreshNow={runTest}
+        refreshing={refreshing}
+        lastRefreshTs={lastRefreshTs}
+        refreshLabel="Run test again"
+      />
     </div>
-  );
-}
+
+    {err && (
+      <div className="max-w-6xl mx-auto p-3 rounded-xl bg-rose-50 border border-rose-100 text-rose-700 text-sm">
+        {err}
+      </div>
+    )}
+  </div>
+);

@@ -301,9 +301,9 @@ export default function WifiHealthMeter({
         {/* Right column: explanation + trend + tiles */}
         <div className="flex-1 flex flex-col justify-between">
           <div>
-            <p className="text-sm text-slate-800 whitespace-pre-wrap text-center md:text-left">
-              {explanation}
-            </p>
+                <p className="text-base sm:text-lg text-slate-800 whitespace-pre-wrap text-center md:text-left">
+      {explanation}
+    </p>
 
             {trendSummary && (
               <p className="mt-3 text-sm text-slate-600 whitespace-pre-wrap text-center md:text-left">
