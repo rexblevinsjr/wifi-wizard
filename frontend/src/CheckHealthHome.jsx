@@ -177,6 +177,7 @@ export default function CheckHealthHome() {
   const [progress, setProgress] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
 
+  const ctaRef = useRef(null);
   const visualTimerRef = useRef(null);
   const finishTimerRef = useRef(null);
   const startRef = useRef(0);
@@ -227,6 +228,7 @@ export default function CheckHealthHome() {
     let bytes = 0;
 
     if (reader) {
+      // Streamed response
       // eslint-disable-next-line no-constant-condition
       while (true) {
         const { done, value } = await reader.read();
@@ -241,19 +243,19 @@ export default function CheckHealthHome() {
     const seconds = (performance.now() - start) / 1000;
     if (seconds === 0) return 0;
 
-    // Raw single-stream throughput browser → server
+    // Raw single-stream throughput browser → Render
     let mbps = (bytes * 8) / 1_000_000 / seconds;
 
-    // Calibration nudges
+    // 🔧 Calibration: nudge closer to what users see on multi-stream tests
     if (mbps > 0) {
       if (mbps < 10) {
-        // leave very slow lines mostly as-is
+        // very slow / bad lines → report honestly
       } else if (mbps < 50) {
-        mbps *= 1.08;
+        mbps *= 1.08; // +8%
       } else if (mbps < 100) {
-        mbps *= 1.18;
+        mbps *= 1.18; // +18%
       } else {
-        mbps *= 1.25;
+        mbps *= 1.25; // +25% on fast connections
       }
     }
 
@@ -306,6 +308,7 @@ export default function CheckHealthHome() {
       rttMs = (arr[mid - 1] + arr[mid]) / 2;
     }
 
+    // Calibrate RTT down a bit to approximate "ping" users expect
     const approxPing = Math.max(5, rttMs * 0.25);
     return approxPing;
   }
@@ -335,9 +338,10 @@ export default function CheckHealthHome() {
       stopTimers();
       startRef.current = Date.now();
 
-      // visual animation towards ~99%
+      // Same visual behavior as before, but slower overall so 99 is reached later.
       visualTimerRef.current = setInterval(() => {
         const elapsed = Date.now() - startRef.current;
+
         const raw = elapsed / EXPECTED_MS;
         const t = clamp(raw, 0, 1);
 
@@ -345,7 +349,7 @@ export default function CheckHealthHome() {
         const target = eased * 99;
 
         setProgress((p) => {
-          const next = p + (target - p) * 0.045;
+          const next = p + (target - p) * 0.045; // smooth approach
           const clamped = clamp(next, 0, 99);
           progressRef.current = clamped;
           return clamped;
@@ -435,13 +439,13 @@ export default function CheckHealthHome() {
           return merged;
         });
 
-        // ensure minimum perceived run time
+        // Ensure the total test doesn't feel suspiciously instant
         const totalElapsed = Date.now() - startRef.current;
         if (totalElapsed < MIN_RUN_MS) {
           await sleep(MIN_RUN_MS - totalElapsed);
         }
 
-        // finish 99 → 100 with success burst, then phase "done"
+        // Finish 99 → 100 over ~700ms, then success burst, then 'done'.
         const finishStart = Date.now();
         const finishDur = 700;
         const startFrom = Math.max(progressRef.current, 0);
@@ -482,6 +486,7 @@ export default function CheckHealthHome() {
   const heroCell =
     "w-full max-w-6xl mx-auto min-h-[78vh] rounded-3xl bg-white border border-slate-100 shadow-md p-10 sm:p-14 flex flex-col items-center justify-center";
 
+  // 🔧 Shorter results card (less empty space above/below)
   const doneCell =
     "w-full max-w-6xl mx-auto min-h-[52vh] rounded-3xl bg-white border border-slate-100 shadow-md p-6 sm:p-8 flex flex-col items-center justify-center";
 
@@ -518,7 +523,7 @@ export default function CheckHealthHome() {
             </button>
           </div>
 
-          {/* Trust text */}
+          {/* Small trust text at bottom-center of the cell */}
           <div className="mt-8 text-center">
             <p className="text-xs sm:text-sm text-slate-500">
               Free forever. No signup required.
@@ -559,8 +564,8 @@ export default function CheckHealthHome() {
     return (
       <div className="space-y-6">
         <div className={heroCell}>
-          {/* Circle + bar centered, matching idle button vertical position */}
-          <div className="flex-1 flex flex-col items-center justify-center pt-4">
+          {/* Keep circle at same vertical position as the button: center of the cell */}
+          <div className="flex-1 flex items-center justify-center">
             <div className="relative w-72 h-72 sm:w-80 sm:h-80">
               {/* Base ring */}
               <div className="absolute inset-0 rounded-full border-[12px] border-slate-200" />
@@ -574,7 +579,7 @@ export default function CheckHealthHome() {
                 }}
               />
 
-              {/* Gloss overlay on the ring */}
+              {/* Gloss sweep overlay */}
               <div className="absolute inset-[-10px] gloss-spin pointer-events-none" />
 
               {/* Center text */}
@@ -604,23 +609,23 @@ export default function CheckHealthHome() {
                 </div>
               )}
             </div>
+          </div>
 
-            {/* Progress bar + stage text, pulled up closer to the circle */}
-            <div className="mt-4 w-full max-w-2xl">
-              <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
-                <div
-                  className="h-full transition-all"
-                  style={{ width: `${pct}%`, background: color }}
-                />
-              </div>
+          {/* Progress bar + stage text below the centered circle */}
+          <div className="mt-10 w-full max-w-xl">
+            <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
+              <div
+                className="h-full transition-all"
+                style={{ width: `${pct}%`, background: color }}
+              />
+            </div>
 
-              <div className="mt-3 text-sm text-slate-600 text-center font-medium">
-                {stageText}
-              </div>
+            <div className="mt-3 text-sm text-slate-600 text-center font-medium">
+              {stageText}
             </div>
           </div>
 
-          {/* Trust text */}
+          {/* Trust text inside the cell, same position as idle */}
           <div className="mt-8 text-center">
             <p className="text-xs sm:text-sm text-slate-500">
               Free forever. No signup required.
