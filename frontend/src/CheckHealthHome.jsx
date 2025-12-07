@@ -488,7 +488,7 @@ export default function CheckHealthHome() {
 
   // 🔧 Shorter results card (less empty space above/below)
   const doneCell =
-    "w-full max-w-6xl mx-auto min-h-[52vh] rounded-3xl bg-white border border-slate-100 shadow-md p-6 sm:p-8 flex flex-col items-center justify-center";
+    "w-full max-w-6xl mx-auto min-h-[52vh] rounded-3xl bg-white border border-slate-100 shadow-md p-6 sm:p-8 flex flex-col items-center justify-start";
 
   // ---------- IDLE ----------
   if (phase === "idle") {
