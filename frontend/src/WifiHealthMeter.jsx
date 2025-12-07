@@ -352,13 +352,14 @@ function SpeedTile({ label, value, unit, icon }) {
       <div className="text-xs text-slate-500 uppercase tracking-wide">
         {label}
       </div>
-      <div className="mt-1 text-lg font-semibold text-slate-900 flex items-center gap-1">
+      {/* Value on the left, big arrow pushed to the right */}
+      <div className="mt-1 text-lg font-semibold text-slate-900 flex items-center justify-between">
         <span>
           {safe ?? "—"}{" "}
           <span className="text-xs font-normal text-slate-500">{unit}</span>
         </span>
         {icon && (
-          <span className="text-sm text-slate-500">
+          <span className="text-2xl leading-none text-slate-400">
             {icon}
           </span>
         )}
