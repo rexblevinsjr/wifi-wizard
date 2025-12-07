@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import WifiHealthMeter from "./WifiHealthMeter";
 
 const API = process.env.REACT_APP_API_BASE_URL || "http://127.0.0.1:8787";
@@ -7,8 +6,8 @@ const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // Timing controls for the visual animation (behavior only, UI unchanged)
-const MIN_RUN_MS = 8000;      // minimum total time the test should appear to run
-const EXPECTED_MS = 32000;    // target duration to ease up toward ~99%
+const MIN_RUN_MS = 8000; // minimum total time the test should appear to run
+const EXPECTED_MS = 32000; // target duration to ease up toward ~99%
 
 function progressHsl(pct) {
   const hue =
@@ -75,23 +74,33 @@ function buildExplanation(score, label, download, upload, ping) {
 
   if (typeof download === "number") {
     if (download < 25) {
-      notes.push("Download speed is on the low side for modern streaming and multi-device use.");
+      notes.push(
+        "Download speed is on the low side for modern streaming and multi-device use."
+      );
     } else if (download < 50) {
-      notes.push("Download speed is adequate, but heavy streaming or large downloads may feel slower.");
+      notes.push(
+        "Download speed is adequate, but heavy streaming or large downloads may feel slower."
+      );
     }
   }
 
   if (typeof upload === "number") {
     if (upload < 5) {
-      notes.push("Upload speed may limit smooth video calls, cloud backups, or large file uploads.");
+      notes.push(
+        "Upload speed may limit smooth video calls, cloud backups, or large file uploads."
+      );
     }
   }
 
   if (typeof ping === "number") {
     if (ping > 80) {
-      notes.push("Latency to our test server is elevated, which can add delay to gaming or real-time calls.");
+      notes.push(
+        "Latency to our test server is elevated, which can add delay to gaming or real-time calls."
+      );
     } else if (ping < 40) {
-      notes.push("Latency to our test server is low, which is great for gaming and real-time apps.");
+      notes.push(
+        "Latency to our test server is low, which is great for gaming and real-time apps."
+      );
     }
   }
 
@@ -100,7 +109,11 @@ function buildExplanation(score, label, download, upload, ping) {
 }
 
 function buildTrendSummary(prev, curr) {
-  if (!prev) return { trend: null, trend_summary: "First scan — no previous data to compare." };
+  if (!prev)
+    return {
+      trend: null,
+      trend_summary: "First scan — no previous data to compare.",
+    };
 
   const dDelta =
     typeof curr.download === "number" && typeof prev.download === "number"
@@ -152,8 +165,6 @@ function buildTrendSummary(prev, curr) {
 // ---------------------------------------------------------------
 
 export default function CheckHealthHome() {
-  const navigate = useNavigate();
-
   const [report, setReport] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [lastRefreshTs, setLastRefreshTs] = useState(null);
@@ -359,7 +370,12 @@ export default function CheckHealthHome() {
         console.error("Backend refresh/analysis failed:", e);
       }
 
-      const currentMetrics = { download, upload, ping_ms: pingMs, ts: Date.now() };
+      const currentMetrics = {
+        download,
+        upload,
+        ping_ms: pingMs,
+        ts: Date.now(),
+      };
       let previousMetrics = null;
       try {
         const raw = localStorage.getItem("aiwifi_last_scan");
@@ -370,10 +386,16 @@ export default function CheckHealthHome() {
 
       const healthScore = computeHealthScore(download, upload, pingMs);
       const healthLabel = buildHealthLabel(healthScore);
-      const { trend, trend_summary } = buildTrendSummary(previousMetrics, currentMetrics);
+      const { trend, trend_summary } = buildTrendSummary(
+        previousMetrics,
+        currentMetrics
+      );
 
       try {
-        localStorage.setItem("aiwifi_last_scan", JSON.stringify(currentMetrics));
+        localStorage.setItem(
+          "aiwifi_last_scan",
+          JSON.stringify(currentMetrics)
+        );
       } catch {
         // ignore storage failure
       }
@@ -396,7 +418,13 @@ export default function CheckHealthHome() {
           ...baseScore,
           wifi_health_score: healthScore,
           wifi_health_label: healthLabel,
-          explanation: buildExplanation(healthScore, healthLabel, download, upload, pingMs),
+          explanation: buildExplanation(
+            healthScore,
+            healthLabel,
+            download,
+            upload,
+            pingMs
+          ),
           trend_summary: trend_summary ?? baseScore.trend_summary,
           trend: trend ?? baseScore.trend,
         };
@@ -448,19 +476,20 @@ export default function CheckHealthHome() {
     }
   }, [refreshing, waitForPerf]);
 
-    const heroCell =
+  // Shared layout cells
+  const heroCell =
     "w-full max-w-6xl mx-auto min-h-[78vh] rounded-3xl bg-white border border-slate-100 shadow-md p-10 sm:p-14 flex flex-col items-center justify-center";
 
   const doneCell =
-  "w-full max-w-6xl mx-auto min-h-[68vh] rounded-3xl bg-white border border-slate-100 shadow-md p-6 sm:p-8 flex flex-col items-center justify-center";
+    "w-full max-w-6xl mx-auto min-h-[68vh] rounded-3xl bg-white border border-slate-100 shadow-md p-6 sm:p-8 flex flex-col items-center justify-center";
 
-    // ---------- IDLE ----------
+  // ---------- IDLE ----------
   if (phase === "idle") {
     return (
       <div className="space-y-6">
         <div className={heroCell}>
           {/* Centered button */}
-          <div className="flex-1 flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center" ref={ctaRef}>
             <button
               onClick={runTest}
               disabled={refreshing}
@@ -507,18 +536,23 @@ export default function CheckHealthHome() {
     );
   }
 
-    // ---------- RUNNING ----------
+  // ---------- RUNNING ----------
   if (phase === "running") {
     const pct = Math.round(progress);
     const color = progressHsl(pct);
 
     const stageText =
-      pct < 8 ? "Initializing scan…" :
-      pct < 35 ? "Scanning Wi-Fi environment…" :
-      pct < 65 ? "Running speed tests…" :
-      pct < 88 ? "Analyzing stability & congestion…" :
-      pct < 100 ? "Finalizing report…" :
-      "Complete";
+      pct < 8
+        ? "Initializing scan…"
+        : pct < 35
+        ? "Scanning Wi-Fi environment…"
+        : pct < 65
+        ? "Running speed tests…"
+        : pct < 88
+        ? "Analyzing stability & congestion…"
+        : pct < 100
+        ? "Finalizing report…"
+        : "Complete";
 
     return (
       <div className="space-y-6">
@@ -683,26 +717,26 @@ export default function CheckHealthHome() {
     );
   }
 
-
-    // ---------- DONE ----------
-return (
-  <div className="space-y-6">
-    <div className={doneCell}>
-      <WifiHealthMeter
-        variant="full"
-        embedded
-        report={report}
-        onRefreshNow={runTest}
-        refreshing={refreshing}
-        lastRefreshTs={lastRefreshTs}
-        refreshLabel="Run test again"
-      />
-    </div>
-
-    {err && (
-      <div className="max-w-6xl mx-auto p-3 rounded-xl bg-rose-50 border border-rose-100 text-rose-700 text-sm">
-        {err}
+  // ---------- DONE (default / after running) ----------
+  return (
+    <div className="space-y-6">
+      <div className={doneCell}>
+        <WifiHealthMeter
+          variant="full"
+          embedded
+          report={report}
+          onRefreshNow={runTest}
+          refreshing={refreshing}
+          lastRefreshTs={lastRefreshTs}
+          refreshLabel="Run test again"
+        />
       </div>
-    )}
-  </div>
-);
+
+      {err && (
+        <div className="max-w-6xl mx-auto p-3 rounded-xl bg-rose-50 border border-rose-100 text-rose-700 text-sm">
+          {err}
+        </div>
+      )}
+    </div>
+  );
+}
