@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import WifiHealthMeter from "./WifiHealthMeter";
 
 const API = process.env.REACT_APP_API_BASE_URL || "http://127.0.0.1:8787";
@@ -6,8 +7,8 @@ const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // Timing controls for the visual animation (behavior only, UI unchanged)
-const MIN_RUN_MS = 8000; // minimum total time the test should appear to run
-const EXPECTED_MS = 32000; // target duration to ease up toward ~99%
+const MIN_RUN_MS = 8000;      // minimum total time the test should appear to run
+const EXPECTED_MS = 32000;    // target duration to ease up toward ~99%
 
 function progressHsl(pct) {
   const hue =
@@ -74,33 +75,23 @@ function buildExplanation(score, label, download, upload, ping) {
 
   if (typeof download === "number") {
     if (download < 25) {
-      notes.push(
-        "Download speed is on the low side for modern streaming and multi-device use."
-      );
+      notes.push("Download speed is on the low side for modern streaming and multi-device use.");
     } else if (download < 50) {
-      notes.push(
-        "Download speed is adequate, but heavy streaming or large downloads may feel slower."
-      );
+      notes.push("Download speed is adequate, but heavy streaming or large downloads may feel slower.");
     }
   }
 
   if (typeof upload === "number") {
     if (upload < 5) {
-      notes.push(
-        "Upload speed may limit smooth video calls, cloud backups, or large file uploads."
-      );
+      notes.push("Upload speed may limit smooth video calls, cloud backups, or large file uploads.");
     }
   }
 
   if (typeof ping === "number") {
     if (ping > 80) {
-      notes.push(
-        "Latency to our test server is elevated, which can add delay to gaming or real-time calls."
-      );
+      notes.push("Latency to our test server is elevated, which can add delay to gaming or real-time calls.");
     } else if (ping < 40) {
-      notes.push(
-        "Latency to our test server is low, which is great for gaming and real-time apps."
-      );
+      notes.push("Latency to our test server is low, which is great for gaming and real-time apps.");
     }
   }
 
@@ -109,11 +100,7 @@ function buildExplanation(score, label, download, upload, ping) {
 }
 
 function buildTrendSummary(prev, curr) {
-  if (!prev)
-    return {
-      trend: null,
-      trend_summary: "First scan — no previous data to compare.",
-    };
+  if (!prev) return { trend: null, trend_summary: "First scan — no previous data to compare." };
 
   const dDelta =
     typeof curr.download === "number" && typeof prev.download === "number"
@@ -165,6 +152,8 @@ function buildTrendSummary(prev, curr) {
 // ---------------------------------------------------------------
 
 export default function CheckHealthHome() {
+  const navigate = useNavigate();
+
   const [report, setReport] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [lastRefreshTs, setLastRefreshTs] = useState(null);
@@ -370,12 +359,7 @@ export default function CheckHealthHome() {
         console.error("Backend refresh/analysis failed:", e);
       }
 
-      const currentMetrics = {
-        download,
-        upload,
-        ping_ms: pingMs,
-        ts: Date.now(),
-      };
+      const currentMetrics = { download, upload, ping_ms: pingMs, ts: Date.now() };
       let previousMetrics = null;
       try {
         const raw = localStorage.getItem("aiwifi_last_scan");
@@ -386,16 +370,10 @@ export default function CheckHealthHome() {
 
       const healthScore = computeHealthScore(download, upload, pingMs);
       const healthLabel = buildHealthLabel(healthScore);
-      const { trend, trend_summary } = buildTrendSummary(
-        previousMetrics,
-        currentMetrics
-      );
+      const { trend, trend_summary } = buildTrendSummary(previousMetrics, currentMetrics);
 
       try {
-        localStorage.setItem(
-          "aiwifi_last_scan",
-          JSON.stringify(currentMetrics)
-        );
+        localStorage.setItem("aiwifi_last_scan", JSON.stringify(currentMetrics));
       } catch {
         // ignore storage failure
       }
@@ -418,13 +396,7 @@ export default function CheckHealthHome() {
           ...baseScore,
           wifi_health_score: healthScore,
           wifi_health_label: healthLabel,
-          explanation: buildExplanation(
-            healthScore,
-            healthLabel,
-            download,
-            upload,
-            pingMs
-          ),
+          explanation: buildExplanation(healthScore, healthLabel, download, upload, pingMs),
           trend_summary: trend_summary ?? baseScore.trend_summary,
           trend: trend ?? baseScore.trend,
         };
@@ -476,7 +448,6 @@ export default function CheckHealthHome() {
     }
   }, [refreshing, waitForPerf]);
 
-  // Shared layout cells
   const heroCell =
     "w-full max-w-6xl mx-auto min-h-[78vh] rounded-3xl bg-white border border-slate-100 shadow-md p-10 sm:p-14 flex flex-col items-center justify-center";
 
@@ -489,7 +460,7 @@ export default function CheckHealthHome() {
       <div className="space-y-6">
         <div className={heroCell}>
           {/* Centered button */}
-          <div className="flex-1 flex items-center justify-center" ref={ctaRef}>
+          <div className="flex-1 flex items-center justify-center">
             <button
               onClick={runTest}
               disabled={refreshing}
@@ -542,17 +513,12 @@ export default function CheckHealthHome() {
     const color = progressHsl(pct);
 
     const stageText =
-      pct < 8
-        ? "Initializing scan…"
-        : pct < 35
-        ? "Scanning Wi-Fi environment…"
-        : pct < 65
-        ? "Running speed tests…"
-        : pct < 88
-        ? "Analyzing stability & congestion…"
-        : pct < 100
-        ? "Finalizing report…"
-        : "Complete";
+      pct < 8 ? "Initializing scan…" :
+      pct < 35 ? "Scanning Wi-Fi environment…" :
+      pct < 65 ? "Running speed tests…" :
+      pct < 88 ? "Analyzing stability & congestion…" :
+      pct < 100 ? "Finalizing report…" :
+      "Complete";
 
     return (
       <div className="space-y-6">
@@ -571,24 +537,22 @@ export default function CheckHealthHome() {
             />
 
             {/* Gloss sweep overlay */}
-            <div className="absolute inset-0 overflow-hidden rounded-full pointer-events-none">
-              <div className="gloss-spin">
-                <div className="gloss" />
-              </div>
-            </div>
+            <div className="absolute inset-[-10px] gloss-spin pointer-events-none" />
 
-            {/* Center content */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div className="text-[2.75rem] sm:text-[3rem] font-semibold tracking-tight text-slate-900">
-                {pct}%
+            {/* Center text */}
+            {!showSuccess && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                <div className="text-6xl font-extrabold" style={{ color }}>
+                  {pct}%
+                </div>
+                <div className="mt-2 text-sm tracking-widest uppercase text-slate-500 font-semibold">
+                  Running test
+                </div>
+                <div className="mt-2 text-sm sm:text-base text-slate-700 max-w-[220px] mx-auto px-2">
+                  Measuring Wi-Fi + ISP performance
+                </div>
               </div>
-              <div className="mt-1 text-xs sm:text-sm font-medium tracking-[0.18em] uppercase text-slate-400">
-                Running test
-              </div>
-              <div className="mt-2 text-[0.8rem] sm:text-xs text-slate-500 text-center max-w-[12rem] leading-snug">
-                Measuring Wi-Fi + ISP performance
-              </div>
-            </div>
+            )}
 
             {/* Success burst */}
             {showSuccess && (
@@ -607,19 +571,17 @@ export default function CheckHealthHome() {
           <div className="mt-10 w-full max-w-xl">
             <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
               <div
-                className="h-full rounded-full transition-all"
-                style={{
-                  width: `${pct}%`,
-                  background: `linear-gradient(90deg, hsl(210, 100%, 60%), ${color})`,
-                }}
+                className="h-full transition-all"
+                style={{ width: `${pct}%`, background: color }}
               />
             </div>
+
             <div className="mt-3 text-sm text-slate-600 text-center font-medium">
               {stageText}
             </div>
           </div>
 
-          {/* Trust text below the button cell, same as on home */}
+          {/* Small trust text at bottom-center of the cell (same place as idle) */}
           <div className="mt-8 text-center">
             <p className="text-xs sm:text-sm text-slate-500">
               Free forever. No signup required.
@@ -632,75 +594,57 @@ export default function CheckHealthHome() {
 
         <style>{`
           .gloss-spin {
-            position: absolute;
-            inset: -35%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transform-origin: center;
-            animation: gloss-spin 3.5s linear infinite;
+            background:
+              conic-gradient(
+                from 0deg,
+                rgba(255,255,255,0) 0deg,
+                rgba(255,255,255,0.0) 260deg,
+                rgba(255,255,255,0.75) 300deg,
+                rgba(255,255,255,0.0) 330deg,
+                rgba(255,255,255,0) 360deg
+              );
+            -webkit-mask: radial-gradient(transparent 60%, black 62%);
+            mask: radial-gradient(transparent 60%, black 62%);
+            filter: blur(2px);
+            animation: gloss-rotate 1.4s linear infinite;
+            opacity: 0.7;
           }
-          .gloss {
-            width: 120%;
-            height: 220%;
-            background: radial-gradient(
-              circle at 50% 0%,
-              rgba(255, 255, 255, 0.66),
-              transparent 56%
-            );
-            transform: rotate(-8deg);
-          }
-          @keyframes gloss-spin {
-            0% {
-              transform: rotate(0deg);
-            }
-            100% {
-              transform: rotate(360deg);
-            }
+          @keyframes gloss-rotate {
+            to { transform: rotate(360deg); }
           }
 
-          /* Success burst animations */
           .success-burst {
             position: relative;
-            width: 11rem;
-            height: 11rem;
+            width: 220px;
+            height: 220px;
             display: flex;
             align-items: center;
             justify-content: center;
+            animation: pop 0.35s ease-out forwards;
+          }
+          .success-check {
+            font-size: 72px;
+            font-weight: 900;
+            color: #10b981;
+            text-shadow: 0 6px 18px rgba(16,185,129,0.35);
+            animation: check-in 0.45s ease-out forwards;
           }
           .success-ring {
             position: absolute;
             inset: 0;
             border-radius: 9999px;
-            border: 3px solid rgba(16, 185, 129, 0.5);
-            transform: scale(0.7);
-            opacity: 0;
-            animation: ring 1.5s ease-out infinite;
+            border: 6px solid rgba(16,185,129,0.9);
+            animation: ring 0.75s ease-out forwards;
           }
           .success-ring.delay-1 {
-            animation-delay: 0.35s;
+            animation-delay: 0.08s;
+            border-color: rgba(34,197,94,0.75);
           }
           .success-ring.delay-2 {
-            animation-delay: 0.7s;
+            animation-delay: 0.16s;
+            border-color: rgba(132,204,22,0.6);
           }
-          .success-check {
-            position: relative;
-            width: 3.2rem;
-            height: 3.2rem;
-            border-radius: 9999px;
-            background: radial-gradient(circle at 30% 0%, #6ee7b7, #059669);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.8rem;
-            font-weight: 700;
-            box-shadow:
-              0 18px 40px rgba(16, 185, 129, 0.45),
-              0 0 0 1px rgba(5, 150, 105, 0.35);
-            animation: check-in 0.7s ease-out forwards;
-          }
-          @keyframes burst {
+          @keyframes pop {
             0% { transform: scale(0.7); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
           }
@@ -717,7 +661,7 @@ export default function CheckHealthHome() {
     );
   }
 
-  // ---------- DONE (default / after running) ----------
+  // ---------- DONE ----------
   return (
     <div className="space-y-6">
       <div className={doneCell}>
