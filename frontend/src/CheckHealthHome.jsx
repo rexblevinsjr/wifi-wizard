@@ -565,7 +565,7 @@ export default function CheckHealthHome() {
       <div className="space-y-6">
         <div className={heroCell}>
           {/* Keep circle at same vertical position as the button: center of the cell */}
-          <div className="flex-1 flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center relative w-full">
             <div className="relative w-72 h-72 sm:w-80 sm:h-80">
               {/* Base ring */}
               <div className="absolute inset-0 rounded-full border-[12px] border-slate-200" />
@@ -609,19 +609,19 @@ export default function CheckHealthHome() {
                 </div>
               )}
             </div>
-          </div>
 
-          {/* Progress bar + stage text below the centered circle */}
-          <div className="mt-10 w-full max-w-xl">
-            <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
-              <div
-                className="h-full transition-all"
-                style={{ width: `${pct}%`, background: color }}
-              />
-            </div>
+            {/* Progress bar + stage text positioned inside flex-1 so it doesn't shift the circle */}
+            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-full max-w-xl">
+              <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
+                <div
+                  className="h-full transition-all"
+                  style={{ width: `${pct}%`, background: color }}
+                />
+              </div>
 
-            <div className="mt-3 text-sm text-slate-600 text-center font-medium">
-              {stageText}
+              <div className="mt-3 text-sm text-slate-600 text-center font-medium">
+                {stageText}
+              </div>
             </div>
           </div>
 
