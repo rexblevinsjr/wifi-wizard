@@ -560,7 +560,7 @@ export default function CheckHealthHome() {
       <div className="space-y-6">
         <div className={heroCell}>
           {/* Circle + bar centered, matching idle button vertical position */}
-          <div className="flex-1 flex flex-col items-center justify-center">
+          <div className="flex-1 flex flex-col items-center justify-center pt-4">
             <div className="relative w-72 h-72 sm:w-80 sm:h-80">
               {/* Base ring */}
               <div className="absolute inset-0 rounded-full border-[12px] border-slate-200" />
@@ -606,7 +606,7 @@ export default function CheckHealthHome() {
             </div>
 
             {/* Progress bar + stage text, pulled up closer to the circle */}
-            <div className="mt-3 w-full max-w-xl">
+            <div className="mt-4 w-full max-w-2xl">
               <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
                 <div
                   className="h-full transition-all"
