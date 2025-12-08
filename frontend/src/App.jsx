@@ -21,10 +21,10 @@ export default function App() {
             {/* Brand / Home button */}
             <Link to="/" className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-lg bg-slate-900 text-white grid place-items-center font-black">
-                W
+                MWH
               </div>
               <div className="font-extrabold tracking-tight text-slate-900">
-                Wi-Fi Wizard
+                MyWifiHealth
               </div>
             </Link>
 
