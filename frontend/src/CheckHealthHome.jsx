@@ -493,53 +493,59 @@ export default function CheckHealthHome() {
   // ---------- IDLE ----------
   if (phase === "idle") {
     return (
-      <div className="space-y-6">
-        <div className={heroCell}>
-          {/* Centered button */}
-          <div className="flex-1 flex items-center justify-center">
-            <button
-              onClick={runTest}
-              disabled={refreshing}
-              className="
+      <>
+        <h1 className="sr-only">
+          Free Wi-Fi Speed Test & Network Health Check | MyWiFiHealth
+        </h1>
+
+        <div className="space-y-6">
+          <div className={heroCell}>
+            {/* Centered button */}
+            <div className="flex-1 flex items-center justify-center">
+              <button
+                onClick={runTest}
+                disabled={refreshing}
+                className="
                 group relative flex items-center justify-center
                 w-72 h-72 sm:w-80 sm:h-80
                 rounded-full bg-slate-900 text-white
                 shadow-xl hover:shadow-2xl hover:bg-slate-800
                 transition active:scale-[0.985]
               "
-            >
-              <div className="absolute inset-4 rounded-full border-2 border-white/15 group-hover:border-white/25 transition" />
-              <div className="text-center px-6">
-                <div className="text-sm tracking-widest uppercase text-white/70 font-semibold">
-                  Check
+              >
+                <div className="absolute inset-4 rounded-full border-2 border-white/15 group-hover:border-white/25 transition" />
+                <div className="text-center px-6">
+                  <div className="text-sm tracking-widest uppercase text-white/70 font-semibold">
+                    Check
+                  </div>
+                  <div className="mt-2 text-3xl sm:text-4xl font-extrabold">
+                    Network Health
+                  </div>
+                  <div className="mt-3 text-sm sm:text-base text-white/70 max-w-[220px] mx-auto">
+                    Run an advanced Wi-Fi scan + speed test
+                  </div>
                 </div>
-                <div className="mt-2 text-3xl sm:text-4xl font-extrabold">
-                  Network Health
-                </div>
-                <div className="mt-3 text-sm sm:text-base text-white/70 max-w-[220px] mx-auto">
-                  Run an advanced Wi-Fi scan + speed test
-                </div>
-              </div>
-            </button>
+              </button>
+            </div>
+
+            {/* Small trust text at bottom-center of the cell */}
+            <div className="mt-8 text-center">
+              <p className="text-xs sm:text-sm text-slate-500">
+                Free forever. No signup required.
+              </p>
+              <p className="mt-1 text-xs sm:text-sm text-slate-500">
+                Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
+              </p>
+            </div>
           </div>
 
-          {/* Small trust text at bottom-center of the cell */}
-          <div className="mt-8 text-center">
-            <p className="text-xs sm:text-sm text-slate-500">
-              Free forever. No signup required.
-            </p>
-            <p className="mt-1 text-xs sm:text-sm text-slate-500">
-              Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
-            </p>
-          </div>
+          {err && (
+            <div className="max-w-6xl mx-auto p-3 rounded-xl bg-rose-50 border border-rose-100 text-rose-700 text-sm">
+              {err}
+            </div>
+          )}
         </div>
-
-        {err && (
-          <div className="max-w-6xl mx-auto p-3 rounded-xl bg-rose-50 border border-rose-100 text-rose-700 text-sm">
-            {err}
-          </div>
-        )}
-      </div>
+      </>
     );
   }
 
@@ -562,81 +568,86 @@ export default function CheckHealthHome() {
         : "Complete";
 
     return (
-      <div className="space-y-6">
-        <div className={heroCell}>
-          {/* Keep circle at same vertical position as the button: center of the cell */}
-          <div className="flex-1 flex items-center justify-center relative w-full">
-            <div className="relative w-72 h-72 sm:w-80 sm:h-80">
-              {/* Base ring */}
-              <div className="absolute inset-0 rounded-full border-[12px] border-slate-200" />
+      <>
+        <h1 className="sr-only">
+          Free Wi-Fi Speed Test & Network Health Check | MyWiFiHealth
+        </h1>
 
-              {/* Progress ring */}
-              <div
-                className="absolute inset-0 rounded-full border-[12px] transition-all"
-                style={{
-                  borderColor: color,
-                  clipPath: `inset(${100 - pct}% 0 0 0)`,
-                }}
-              />
+        <div className="space-y-6">
+          <div className={heroCell}>
+            {/* Keep circle at same vertical position as the button: center of the cell */}
+            <div className="flex-1 flex items-center justify-center relative w-full">
+              <div className="relative w-72 h-72 sm:w-80 sm:h-80">
+                {/* Base ring */}
+                <div className="absolute inset-0 rounded-full border-[12px] border-slate-200" />
 
-              {/* Gloss sweep overlay */}
-              <div className="absolute inset-[-10px] gloss-spin pointer-events-none" />
-
-              {/* Center text */}
-              {!showSuccess && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                  <div className="text-6xl font-extrabold" style={{ color }}>
-                    {pct}%
-                  </div>
-                  <div className="mt-2 text-sm tracking-widest uppercase text-slate-500 font-semibold">
-                    Running test
-                  </div>
-                  <div className="mt-2 text-sm sm:text-base text-slate-700 max-w-[220px] mx-auto px-2">
-                    Measuring Wi-Fi + ISP performance
-                  </div>
-                </div>
-              )}
-
-              {/* Success burst */}
-              {showSuccess && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="success-burst">
-                    <div className="success-ring" />
-                    <div className="success-ring delay-1" />
-                    <div className="success-ring delay-2" />
-                    <div className="success-check">✓</div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Progress bar + stage text positioned inside flex-1 so it doesn't shift the circle */}
-            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-full max-w-xl">
-              <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
+                {/* Progress ring */}
                 <div
-                  className="h-full transition-all"
-                  style={{ width: `${pct}%`, background: color }}
+                  className="absolute inset-0 rounded-full border-[12px] transition-all"
+                  style={{
+                    borderColor: color,
+                    clipPath: `inset(${100 - pct}% 0 0 0)`,
+                  }}
                 />
+
+                {/* Gloss sweep overlay */}
+                <div className="absolute inset-[-10px] gloss-spin pointer-events-none" />
+
+                {/* Center text */}
+                {!showSuccess && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                    <div className="text-6xl font-extrabold" style={{ color }}>
+                      {pct}%
+                    </div>
+                    <div className="mt-2 text-sm tracking-widest uppercase text-slate-500 font-semibold">
+                      Running test
+                    </div>
+                    <div className="mt-2 text-sm sm:text-base text-slate-700 max-w-[220px] mx-auto px-2">
+                      Measuring Wi-Fi + ISP performance
+                    </div>
+                  </div>
+                )}
+
+                {/* Success burst */}
+                {showSuccess && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="success-burst">
+                      <div className="success-ring" />
+                      <div className="success-ring delay-1" />
+                      <div className="success-ring delay-2" />
+                      <div className="success-check">✓</div>
+                    </div>
+                  </div>
+                )}
               </div>
 
-              <div className="mt-3 text-sm text-slate-600 text-center font-medium">
-                {stageText}
+              {/* Progress bar + stage text positioned inside flex-1 so it doesn't shift the circle */}
+              <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-full max-w-xl">
+                <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
+                  <div
+                    className="h-full transition-all"
+                    style={{ width: `${pct}%`, background: color }}
+                  />
+                </div>
+
+                <div className="mt-3 text-sm text-slate-600 text-center font-medium">
+                  {stageText}
+                </div>
               </div>
+            </div>
+
+            {/* Trust text inside the cell, same position as idle */}
+            <div className="mt-8 text-center">
+              <p className="text-xs sm:text-sm text-slate-500">
+                Free forever. No signup required.
+              </p>
+              <p className="mt-1 text-xs sm:text-sm text-slate-500">
+                Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
+              </p>
             </div>
           </div>
 
-          {/* Trust text inside the cell, same position as idle */}
-          <div className="mt-8 text-center">
-            <p className="text-xs sm:text-sm text-slate-500">
-              Free forever. No signup required.
-            </p>
-            <p className="mt-1 text-xs sm:text-sm text-slate-500">
-              Trusted by visitors to quickly diagnose Wi-Fi and ISP issues.
-            </p>
-          </div>
-        </div>
-
-        <style>{`
+          <style>{`
           .gloss-spin {
             background:
               conic-gradient(
@@ -701,30 +712,37 @@ export default function CheckHealthHome() {
             100% { transform: scale(1.25); opacity: 0; }
           }
         `}</style>
-      </div>
+        </div>
+      </>
     );
   }
 
   // ---------- DONE ----------
   return (
-    <div className="space-y-6">
-      <div className={doneCell}>
-        <WifiHealthMeter
-          variant="full"
-          embedded
-          report={report}
-          onRefreshNow={runTest}
-          refreshing={refreshing}
-          lastRefreshTs={lastRefreshTs}
-          refreshLabel="Run test again"
-        />
-      </div>
+    <>
+      <h1 className="sr-only">
+        Free Wi-Fi Speed Test & Network Health Check | MyWiFiHealth
+      </h1>
 
-      {err && (
-        <div className="max-w-6xl mx-auto p-3 rounded-xl bg-rose-50 border border-rose-100 text-rose-700 text-sm">
-          {err}
+      <div className="space-y-6">
+        <div className={doneCell}>
+          <WifiHealthMeter
+            variant="full"
+            embedded
+            report={report}
+            onRefreshNow={runTest}
+            refreshing={refreshing}
+            lastRefreshTs={lastRefreshTs}
+            refreshLabel="Run test again"
+          />
         </div>
-      )}
-    </div>
+
+        {err && (
+          <div className="max-w-6xl mx-auto p-3 rounded-xl bg-rose-50 border border-rose-100 text-rose-700 text-sm">
+            {err}
+          </div>
+        )}
+      </div>
+    </>
   );
 }
