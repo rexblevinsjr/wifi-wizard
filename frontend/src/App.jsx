@@ -19,21 +19,21 @@ export default function App() {
         <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-slate-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
             {/* Brand / Home button */}
-            <Link to="/" className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-slate-900 text-white grid place-items-center font-black">
-                MWH
-              </div>
+            <Link
+              to="/"
+              className="flex items-center pl-1"
+            >
               <div className="font-extrabold tracking-tight text-slate-900">
                 MyWifiHealth
               </div>
             </Link>
 
             {/* Nav Links */}
-            <nav className="flex items-center gap-2">
+            <nav className="flex items-center gap-2 pr-1">
               <Link
                 to="/upgrade"
                 className="px-3 py-2 rounded-lg text-sm font-semibold
-                           text-white bg-slate-900 hover:bg-slate-800 transition"
+text-white bg-slate-900 hover:bg-slate-800 transition"
               >
                 Go PRO
               </Link>
