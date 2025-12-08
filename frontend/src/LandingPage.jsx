@@ -1,20 +1,40 @@
 import React, { useState } from "react";
 import CheckHealthHome from "./CheckHealthHome";
 
+const API = process.env.REACT_APP_API_BASE_URL || "http://127.0.0.1:8787";
+
 export default function LandingPage() {
   const [email, setEmail] = useState("");
   const [saved, setSaved] = useState(false);
 
-  const saveEmail = (e) => {
+  const saveEmail = async (e) => {
     e.preventDefault();
     const v = email.trim();
     if (!v) return;
 
+    // Keep the original localStorage behavior
     try {
       const list = JSON.parse(localStorage.getItem("early_access_emails") || "[]");
       if (!list.includes(v)) list.push(v);
       localStorage.setItem("early_access_emails", JSON.stringify(list));
     } catch {}
+
+    // New: send signup to backend so you can see it centrally
+    try {
+      await fetch(`${API}/early-access/join`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: v,
+          source: "landing_page",
+        }),
+      });
+    } catch (err) {
+      // Fail silently for now; UI still shows "Saved"
+      // You can add console.error here if you want
+    }
 
     setSaved(true);
     setEmail("");

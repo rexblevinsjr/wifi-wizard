@@ -235,3 +235,35 @@ async def early_access_join(payload: EarlyAccessSignup):
         print("Failed to append early access signup:", e)
 
     return {"ok": True}
+
+
+def _read_early_access_signups():
+    """
+    Internal helper to read JSONL signups file.
+    Returns a list of signup dicts.
+    """
+    results = []
+    if EARLY_ACCESS_FILE.exists():
+        try:
+            with open(EARLY_ACCESS_FILE, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        results.append(json.loads(line))
+                    except Exception:
+                        # Skip malformed lines
+                        continue
+        except Exception as e:
+            print("Failed to read early access signups:", e)
+    return results
+
+
+@app.get("/early-access/list")
+def early_access_list():
+    """
+    Return all Early Access signups as JSON.
+    You can hit this endpoint directly to view/export signups.
+    """
+    return {"signups": _read_early_access_signups()}
