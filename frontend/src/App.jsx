@@ -17,7 +17,7 @@ export default function App() {
       <div className="min-h-screen bg-slate-50">
         {/* Top header */}
         <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-slate-200">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
             {/* Brand / Home button */}
             <Link to="/" className="flex items-center">
               <div className="font-extrabold tracking-tight text-slate-900">
