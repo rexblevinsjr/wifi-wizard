@@ -35,7 +35,7 @@ export default function LandingPage() {
           {/* Left side */}
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
-              Wi-Fi Wizard PRO coming soon
+              MyWifiHealth PRO coming soon
             </h1>
 
             <p className="mt-2 text-slate-700 text-sm sm:text-base">
@@ -65,7 +65,7 @@ export default function LandingPage() {
             </div>
 
             <div className="text-xs text-slate-600 mt-1">
-              Drop your email and I’ll notify you when Wi-Fi Wizard PRO goes live
+              Drop your email and we’ll notify you when MyWifiHealth PRO goes live
               with monitoring, outage tracking, and guided fixes.
             </div>
 
