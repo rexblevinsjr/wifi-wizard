@@ -17,11 +17,11 @@ export default function App() {
       <div className="min-h-screen bg-slate-50">
         {/* Top header */}
         <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-slate-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-center gap-8">
             {/* Brand / Home button */}
             <Link
               to="/"
-              className="flex items-center pl-1"
+              className="flex items-center"
             >
               <div className="font-extrabold tracking-tight text-slate-900">
                 MyWifiHealth
@@ -29,7 +29,7 @@ export default function App() {
             </Link>
 
             {/* Nav Links */}
-            <nav className="flex items-center gap-2 pr-1">
+            <nav className="flex items-center gap-2">
               <Link
                 to="/upgrade"
                 className="px-3 py-2 rounded-lg text-sm font-semibold
